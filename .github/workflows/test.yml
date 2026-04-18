@@ -1,0 +1,43 @@
+name: Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+defaults:
+  run:
+    working-directory: duoshou-erp
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20.11.0'
+          cache: 'pnpm'
+          cache-dependency-path: 'duoshou-erp/pnpm-lock.yaml'
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Extract Temu spec (cached)
+        run: |
+          if [ ! -f packages/temu-sdk/spec/temu-api-spec.json ]; then
+            echo "Missing spec file; skipping extract (spec should be committed)"
+            exit 1
+          fi
+      - name: Codegen
+        run: pnpm --filter @duoshou/temu-sdk codegen
+      - name: Build packages
+        run: pnpm -r --filter '@duoshou/shared-types' --filter '@duoshou/temu-sdk' build
+      - name: Run tests
+        run: pnpm -r test
+      - name: Build API
+        run: pnpm --filter @duoshou/api build
+      - name: Build Web
+        run: pnpm --filter @duoshou/web build

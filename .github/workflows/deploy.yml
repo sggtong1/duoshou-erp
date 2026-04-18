@@ -1,0 +1,78 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-main
+  cancel-in-progress: true
+
+defaults:
+  run:
+    working-directory: duoshou-erp
+
+jobs:
+  build-push:
+    needs: []
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      image_api: ${{ steps.meta.outputs.image_api }}
+      image_web: ${{ steps.meta.outputs.image_web }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Login to registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ vars.DOCKER_REGISTRY }}
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Image tags
+        id: meta
+        run: |
+          SHA=${GITHUB_SHA::7}
+          REG=${{ vars.DOCKER_REGISTRY }}
+          echo "image_api=${REG}/duoshou/api:${SHA}" >> $GITHUB_OUTPUT
+          echo "image_web=${REG}/duoshou/web:${SHA}" >> $GITHUB_OUTPUT
+      - name: Build + push API
+        uses: docker/build-push-action@v5
+        with:
+          context: duoshou-erp
+          file: duoshou-erp/infra/docker/api.Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.image_api }}
+      - name: Build + push Web
+        uses: docker/build-push-action@v5
+        with:
+          context: duoshou-erp
+          file: duoshou-erp/infra/docker/web.Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.image_web }}
+          build-args: |
+            VITE_API_BASE_URL=/api
+            VITE_SUPABASE_URL=${{ vars.VITE_SUPABASE_URL }}
+            VITE_SUPABASE_ANON_KEY=${{ secrets.VITE_SUPABASE_ANON_KEY }}
+
+  deploy:
+    needs: build-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script: |
+            set -euo pipefail
+            cd /opt/duoshou-erp
+            export TAG=${GITHUB_SHA::7}
+            docker compose pull
+            docker compose up -d
+            docker image prune -f

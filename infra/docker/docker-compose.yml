@@ -1,0 +1,36 @@
+services:
+  api:
+    image: duoshou/api:${TAG:-latest}
+    restart: always
+    env_file: ../../.env.production
+    depends_on:
+      - redis
+    networks:
+      - internal
+
+  web:
+    image: duoshou/web:${TAG:-latest}
+    restart: always
+    depends_on:
+      - api
+    networks:
+      - internal
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./letsencrypt:/etc/letsencrypt:ro
+
+  redis:
+    image: redis:7-alpine
+    restart: always
+    volumes:
+      - redis-data:/data
+    networks:
+      - internal
+
+networks:
+  internal:
+
+volumes:
+  redis-data:
