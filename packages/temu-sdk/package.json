@@ -26,10 +26,15 @@
     "test": "vitest"
   },
   "devDependencies": {
+    "@types/node": "^20.11.0",
+    "ioredis-mock": "^8.13.1",
     "playwright": "^1.59.1",
     "tsup": "^8.0.0",
     "tsx": "^4.21.0",
     "typescript": "^5.4.0",
     "vitest": "^1.6.0"
+  },
+  "dependencies": {
+    "ioredis": "^5.10.1"
   }
 }
