@@ -57,4 +57,9 @@ describe('rate-limiter', () => {
     await limiter.acquire('shop:4', 2);  // should succeed immediately
     expect(Date.now() - t0).toBeLessThan(100);
   });
+
+  it('throws when tokens requested exceeds burst', async () => {
+    const limiter = createRateLimiter(redis, { qps: 5, burst: 5 });
+    await expect(limiter.acquire('shop:5', 10)).rejects.toThrow(/exceeds burst/);
+  });
 });

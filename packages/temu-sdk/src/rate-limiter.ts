@@ -40,6 +40,9 @@ end
 export function createRateLimiter(redis: Redis, cfg: RateLimiterConfig): RateLimiter {
   return {
     async acquire(key: string, tokens = 1): Promise<void> {
+      if (tokens > cfg.burst) {
+        throw new Error(`acquire(${tokens}) exceeds burst capacity ${cfg.burst}`);
+      }
       for (;;) {
         const result = (await (redis as any).eval(
           LUA_TOKEN_BUCKET,
