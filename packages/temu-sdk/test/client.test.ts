@@ -4,7 +4,17 @@ import { TemuClient } from '../src/client';
 
 describe('TemuClient', () => {
   let redis: any;
-  beforeEach(() => { redis = new RedisMock(); });
+  beforeEach(async () => {
+    redis = new RedisMock();
+    // Warm up ioredis-mock Lua VM (fengari takes ~200ms on first eval).
+    // Without this, rate-limiter timing assertions become flaky.
+    const { createRateLimiter } = await import('../src/rate-limiter');
+    const warmup = createRateLimiter(redis, { qps: 100, burst: 100 });
+    await warmup.acquire('__warmup__', 1);
+    // Additional warmups to ensure Lua VM is fully hot
+    await warmup.acquire('__warmup2__', 1);
+    await warmup.acquire('__warmup3__', 1);
+  });
 
   const baseCtx = {
     appKey: 'k', appSecret: 's', accessToken: 't',
@@ -22,12 +32,22 @@ describe('TemuClient', () => {
     );
     const client = new TemuClient(baseCtx, { redis, qps: 10, burst: 2 });
     // Burst 2 should be fast, 3rd waits ~100ms for refill
+    const t1 = Date.now();
     await client.call('bg.mall.info.get', {});
+    const t2 = Date.now();
     await client.call('bg.mall.info.get', {});
-    const t0 = Date.now();
+    const t3 = Date.now();
+    const t4 = Date.now();
     await client.call('bg.mall.info.get', {});
-    expect(Date.now() - t0).toBeGreaterThanOrEqual(50);
-  }, 5000);
+    const t5 = Date.now();
+    // First two calls should be fast (within ~150ms each, accounting for warmup variance)
+    expect(t2 - t1).toBeLessThan(150);
+    expect(t3 - t2).toBeLessThan(150);
+    // Third call should be slower (50-300ms range for ~100ms wait)
+    const thirdWait = t5 - t4;
+    expect(thirdWait).toBeGreaterThanOrEqual(50);
+    expect(thirdWait).toBeLessThan(300);
+  }, 10000);
 
   it('isolates limits per shopId', async () => {
     vi.spyOn(globalThis, 'fetch').mockImplementation(() =>
@@ -39,5 +59,5 @@ describe('TemuClient', () => {
     const t0 = Date.now();
     await clientB.call('bg.mall.info.get', {});
     expect(Date.now() - t0).toBeLessThan(100);
-  });
+  }, 10000);
 });
