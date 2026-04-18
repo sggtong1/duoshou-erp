@@ -1,0 +1,80 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String?  @unique
+  phone        String?
+  authProvider String   @default("supabase") @map("auth_provider")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  members Member[]
+
+  @@map("user")
+}
+
+model Organization {
+  id        String   @id @default(uuid())
+  name      String
+  status    String   @default("active")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  members Member[]
+  shops   Shop[]
+
+  @@map("organization")
+}
+
+model Member {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  orgId     String   @map("org_id")
+  role      String   @default("owner")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User         @relation(fields: [userId], references: [id])
+  org  Organization @relation(fields: [orgId], references: [id])
+
+  @@unique([userId, orgId])
+  @@index([orgId])
+  @@map("member")
+}
+
+model ShopCredentials {
+  id                   String   @id @default(uuid())
+  appKeyEncrypted      Bytes    @map("app_key_encrypted")
+  appSecretEncrypted   Bytes    @map("app_secret_encrypted")
+  accessTokenEncrypted Bytes    @map("access_token_encrypted")
+  encryptionVersion    Int      @default(1) @map("encryption_version")
+  createdAt            DateTime @default(now()) @map("created_at")
+
+  shop Shop?
+
+  @@map("shop_credentials")
+}
+
+model Shop {
+  id                   String    @id @default(uuid())
+  orgId                String    @map("org_id")
+  platform             String    @default("temu")
+  platformShopId       String    @map("platform_shop_id")
+  shopType             String    @map("shop_type")
+  region               String
+  displayName          String?   @map("display_name")
+  credsVaultRef        String    @unique @map("creds_vault_ref")
+  accessTokenExpiresAt DateTime? @map("access_token_expires_at")
+  status               String    @default("active")
+  connectedAt          DateTime  @default(now()) @map("connected_at")
+
+  org   Organization    @relation(fields: [orgId], references: [id])
+  creds ShopCredentials @relation(fields: [credsVaultRef], references: [id])
+
+  @@unique([orgId, platform, platformShopId])
+  @@index([orgId, platform])
+  @@map("shop")
+}
