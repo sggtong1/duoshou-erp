@@ -2,6 +2,7 @@
   "name": "@duoshou/shared-types",
   "version": "0.1.0",
   "private": true,
+  "sideEffects": false,
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
