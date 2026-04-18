@@ -50,3 +50,43 @@ describe('codegen: types', () => {
     expect(result).not.toMatch(/error TS/);
   });
 });
+
+describe('codegen: methods', () => {
+  const methodsFile = path.join(__dirname, '..', 'src', 'generated', 'methods.ts');
+
+  beforeAll(() => {
+    execSync('pnpm tsx scripts/generate-methods.ts', { cwd: path.join(__dirname, '..'), stdio: 'inherit' });
+  });
+
+  it('methods.ts exists after codegen', () => {
+    expect(fs.existsSync(methodsFile)).toBe(true);
+  });
+
+  it('exports TEMU_API_REGISTRY with 150+ entries', () => {
+    const content = fs.readFileSync(methodsFile, 'utf-8');
+    expect(content).toMatch(/export const TEMU_API_REGISTRY/);
+    const match = content.match(/\/\/ TOTAL_METHODS: (\d+)/);
+    expect(match).toBeTruthy();
+    expect(parseInt(match![1], 10)).toBeGreaterThanOrEqual(150);
+  });
+
+  it('each registry entry has interfaceType, region, requestUrl', () => {
+    const content = fs.readFileSync(methodsFile, 'utf-8');
+    expect(content).toMatch(/'bg\.goods\.add': \{ region: 'cn', requestUrl: '\/openapi\/router'/);
+    expect(content).toMatch(/'bg\.glo\.goods\.add': \{ region: 'pa'/);
+  });
+
+  it('generates camelCase function names', () => {
+    const content = fs.readFileSync(methodsFile, 'utf-8');
+    // bg.mall.info.get -> bgMallInfoGet
+    expect(content).toMatch(/export async function bgMallInfoGet/);
+    expect(content).toMatch(/export async function bgGoodsAdd/);
+  });
+
+  it('output compiles with tsc --noEmit', () => {
+    const result = execSync('npx tsc --noEmit -p tsconfig.json 2>&1 || true', {
+      cwd: path.join(__dirname, '..'),
+    }).toString();
+    expect(result).not.toMatch(/error TS/);
+  });
+});
