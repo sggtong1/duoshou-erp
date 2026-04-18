@@ -1,0 +1,21 @@
+{
+  "name": "duoshou-erp",
+  "private": true,
+  "version": "0.1.0",
+  "description": "舵手 ERP - Temu multi-shop SaaS management platform",
+  "engines": { "node": ">=20.0.0", "pnpm": ">=9.0.0" },
+  "scripts": {
+    "dev:api": "pnpm --filter @duoshou/api dev",
+    "dev:web": "pnpm --filter @duoshou/web dev",
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "lint": "pnpm -r lint",
+    "codegen": "pnpm --filter @duoshou/temu-sdk codegen",
+    "format": "prettier --write \"**/*.{ts,vue,json,md}\""
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0",
+    "prettier": "^3.2.0",
+    "@types/node": "^20.11.0"
+  }
+}

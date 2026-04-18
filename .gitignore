@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.env
+.env.*
+!.env.*.example
+*.log
+.DS_Store
+coverage/
+.turbo/
+packages/temu-sdk/src/generated/
+packages/temu-sdk/spec/raw/*.json
+!packages/temu-sdk/spec/raw/.gitkeep
+.vscode/
+.idea/
