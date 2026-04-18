@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@duoshou/shared-types": "workspace:*",
+    "@supabase/supabase-js": "^2.103.3",
     "naive-ui": "^2.38",
     "pinia": "^2.1",
     "vue": "^3.4",
