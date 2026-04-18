@@ -461,7 +461,48 @@ EventBus (NestJS EE)
 
 `{domain}.{verb}`，如 `price.review.received` / `activity.opened` / `inventory.low` / `inventory.restocked` / `price.changed` / `goods.listing.succeeded` / `goods.listing.failed`
 
-## 11. 部署拓扑
+## 11. 部署拓扑 & 代码仓库结构
+
+### 11.1 Monorepo 布局（pnpm workspaces）
+
+```
+duoshou-erp/
+├─ apps/
+│  ├─ api/                  NestJS 后端（HTTP + WS + Workers 同进程起步）
+│  │  ├─ src/
+│  │  │  ├─ modules/        business modules: product, price, activity, inventory
+│  │  │  ├─ platform/       PlatformClient 接口 + adapter 注册
+│  │  │  ├─ infra/          redis / queue / ratelimit / crypto
+│  │  │  └─ events/         事件总线 / WebSocket gateway / 通知渠道
+│  │  └─ test/
+│  └─ web/                  Vue 3 SPA (Naive UI)
+│     ├─ src/
+│     │  ├─ pages/
+│     │  ├─ components/
+│     │  ├─ stores/         Pinia
+│     │  └─ api-client/     apps/api 的 REST client（类型复用 packages/shared-types）
+│     └─ test/
+├─ packages/
+│  ├─ temu-sdk/             代码生成产物：214 个 Temu API 方法 + 签名/限速/重试
+│  │  ├─ src/generated/     codegen 输出（不手工改）
+│  │  ├─ spec/              输入 JSON schema（从 /tmp/temu-fetch/docs 移入）
+│  │  └─ codegen.ts         生成器脚本
+│  └─ shared-types/         前后端共享 DTO 类型（手写 + codegen 混合）
+├─ docs/
+│  ├─ superpowers/
+│  │  ├─ specs/             设计 spec（本文档所在）
+│  │  └─ plans/             实施计划（writing-plans 产出）
+│  └─ references/temu/      Temu 官方文档归档（_index.md 等）
+├─ infra/
+│  ├─ docker/               Dockerfile + compose
+│  └─ deploy/               部署脚本、nginx conf
+├─ .env.development.example
+├─ .env.production.example
+├─ pnpm-workspace.yaml
+└─ package.json
+```
+
+### 11.2 运行时拓扑
 
 ```
 duoshou.868818.xyz
@@ -560,10 +601,33 @@ duoshou.868818.xyz
 
 ### B. 凭据管理
 
-- 测试账号：Temu 官方提供 2 全托 + 3 半托沙箱账号；字段为 `app_key / app_secret / access_token / shop_id / shop_name`
-- **不入 git**：所有凭据放 `.env.development`（gitignored）
-- 提供 `.env.development.example` 带字段名占位符
-- 生产环境凭据通过运维管道注入（W4 上线前建立）
+测试账号来源：Temu 官方在文档中心提供 2 个全托 + 3 个半托沙箱账号，字段为 `app_key / app_secret / access_token / shop_id / shop_name`。
+
+**凭据入口规范**：
+- `.env.development`（gitignored）：实际凭据放这里，开发者自己从 Temu 文档复制
+- `.env.development.example`（in git）：字段名 + 占位符，新成员照着填
+- `.env.production`：通过运维管道注入（W4 上线前建立，不落盘）
+- **永远不把凭据写进 spec / plan / commit message / 日志**
+
+`.env.development.example` 示例结构：
+```
+# Temu 全托测试账号 1（girl clothes, shop_id=1052202882）
+TEMU_FULL_TEST_1_APP_KEY=
+TEMU_FULL_TEST_1_APP_SECRET=
+TEMU_FULL_TEST_1_ACCESS_TOKEN=
+TEMU_FULL_TEST_1_SHOP_ID=1052202882
+
+# Temu 半托测试账号 1, 2, 3 同理...
+# Supabase
+SUPABASE_URL=
+SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+DATABASE_URL=postgresql://...
+# Redis
+REDIS_URL=redis://localhost:6379
+# 凭据加密
+CREDS_ENCRYPTION_KEY=  # 32 字节 base64
+```
 
 ### C. 术语表
 
