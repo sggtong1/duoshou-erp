@@ -12,3 +12,8 @@ packages/temu-sdk/spec/raw/*.json
 !packages/temu-sdk/spec/raw/.gitkeep
 .vscode/
 .idea/
+*.pem
+*.key
+*.p12
+*.pfx
+secrets/

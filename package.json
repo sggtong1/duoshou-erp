@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "description": "舵手 ERP - Temu multi-shop SaaS management platform",
+  "packageManager": "pnpm@9.0.0",
   "engines": { "node": ">=20.0.0", "pnpm": ">=9.0.0" },
   "scripts": {
     "dev:api": "pnpm --filter @duoshou/api dev",
