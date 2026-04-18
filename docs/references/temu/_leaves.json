@@ -1,0 +1,1286 @@
+[
+  {
+    "documentId": 161805618337,
+    "directoryId": 929750644349,
+    "name": "PA网关调用说明",
+    "path": "API文档 / 【必读】PA网关 / PA网关调用说明"
+  },
+  {
+    "documentId": 108302801700,
+    "directoryId": 875202591662,
+    "name": "bg.goods.add",
+    "path": "API文档 / 货品API组 / bg.goods.add"
+  },
+  {
+    "documentId": 110402515056,
+    "directoryId": 877295850607,
+    "name": "bg.goods.topselling.soldout.get",
+    "path": "API文档 / 货品API组 / bg.goods.topselling.soldout.get"
+  },
+  {
+    "documentId": 110405441306,
+    "directoryId": 877297510235,
+    "name": "bg.product.search",
+    "path": "API文档 / 货品API组 / bg.product.search"
+  },
+  {
+    "documentId": 110406566352,
+    "directoryId": 877298892663,
+    "name": "bg.goods.brand.get",
+    "path": "API文档 / 货品API组 / bg.goods.brand.get"
+  },
+  {
+    "documentId": 110407127642,
+    "directoryId": 877300301642,
+    "name": "bg.goods.suggest.supplyprice.get",
+    "path": "API文档 / 货品API组 / bg.goods.suggest.supplyprice.get"
+  },
+  {
+    "documentId": 120885531484,
+    "directoryId": 887778895107,
+    "name": "bg.goods.detail.get",
+    "path": "API文档 / 货品API组 / bg.goods.detail.get"
+  },
+  {
+    "documentId": 132421233122,
+    "directoryId": 899313688269,
+    "name": "bg.goods.list.get",
+    "path": "API文档 / 货品API组 / bg.goods.list.get"
+  },
+  {
+    "documentId": 135566320486,
+    "directoryId": 902459443915,
+    "name": "bg.goods.migrate",
+    "path": "API文档 / 货品API组 / bg.goods.migrate"
+  },
+  {
+    "documentId": 137663009988,
+    "directoryId": 905604741223,
+    "name": "bg.goods.warehouse.list.get",
+    "path": "API文档 / 货品API组 / bg.goods.warehouse.list.get"
+  },
+  {
+    "documentId": 138711264446,
+    "directoryId": 906654082572,
+    "name": "bg.logistics.template.get",
+    "path": "API文档 / 货品API组 / bg.logistics.template.get"
+  },
+  {
+    "documentId": 143954790074,
+    "directoryId": 911895868661,
+    "name": "bg.goods.file.upload",
+    "path": "API文档 / 货品API组 / bg.goods.file.upload"
+  },
+  {
+    "documentId": 153393468811,
+    "directoryId": 921334459989,
+    "name": "bg.goods.customs.property.check",
+    "path": "API文档 / 货品API组 / bg.goods.customs.property.check"
+  },
+  {
+    "documentId": 141857142324,
+    "directoryId": 909798859447,
+    "name": "货品发布样例",
+    "path": "API文档 / 货品API组 / 货品发布样例"
+  },
+  {
+    "documentId": 156537470491,
+    "directoryId": 925526695187,
+    "name": "bg.glo.goods.add",
+    "path": "API文档 / 货品API组-PA / bg.glo.goods.add"
+  },
+  {
+    "documentId": 157585341445,
+    "directoryId": 924479235154,
+    "name": "bg.glo.goods.list.get",
+    "path": "API文档 / 货品API组-PA / bg.glo.goods.list.get"
+  },
+  {
+    "documentId": 156538658038,
+    "directoryId": 925528074151,
+    "name": "bg.glo.goods.detail.get",
+    "path": "API文档 / 货品API组-PA / bg.glo.goods.detail.get"
+  },
+  {
+    "documentId": 157586975688,
+    "directoryId": 924481089321,
+    "name": "bg.glo.goods.migrate",
+    "path": "API文档 / 货品API组-PA / bg.glo.goods.migrate"
+  },
+  {
+    "documentId": 157587563331,
+    "directoryId": 924481378182,
+    "name": "bg.glo.goods.topselling.soldout.get",
+    "path": "API文档 / 货品API组-PA / bg.glo.goods.topselling.soldout.get"
+  },
+  {
+    "documentId": 163881944601,
+    "directoryId": 931823464808,
+    "name": "bg.btg.goods.stock.warehouse.list.get",
+    "path": "API文档 / 货品API组-PA / bg.btg.goods.stock.warehouse.list.get"
+  },
+  {
+    "documentId": 163894066011,
+    "directoryId": 931835549486,
+    "name": "bg.glo.product.search",
+    "path": "API文档 / 货品API组-PA / bg.glo.product.search"
+  },
+  {
+    "documentId": 163899668794,
+    "directoryId": 931840586312,
+    "name": "bg.glo.best.seller.invitation.query",
+    "path": "API文档 / 货品API组-PA / bg.glo.best.seller.invitation.query"
+  },
+  {
+    "documentId": 161806406099,
+    "directoryId": 929751463671,
+    "name": "bg.glo.logistics.template.get",
+    "path": "API文档 / 货品API组-PA / bg.glo.logistics.template.get"
+  },
+  {
+    "documentId": 164926016288,
+    "directoryId": 932867285290,
+    "name": "bg.glo.goods.brand.get",
+    "path": "API文档 / 货品API组-PA / bg.glo.goods.brand.get"
+  },
+  {
+    "documentId": 110407765974,
+    "directoryId": 877301680397,
+    "name": "bg.virtualinventoryjit.get",
+    "path": "API文档 / 库存管理API组 / bg.virtualinventoryjit.get"
+  },
+  {
+    "documentId": 110409775099,
+    "directoryId": 877302748309,
+    "name": "bg.virtualinventoryjit.edit",
+    "path": "API文档 / 库存管理API组 / bg.virtualinventoryjit.edit"
+  },
+  {
+    "documentId": 110410336935,
+    "directoryId": 877304730595,
+    "name": "bg.goods.quantity.get",
+    "path": "API文档 / 库存管理API组 / bg.goods.quantity.get"
+  },
+  {
+    "documentId": 110410907452,
+    "directoryId": 877304793024,
+    "name": "bg.goods.quantity.update",
+    "path": "API文档 / 库存管理API组 / bg.goods.quantity.update"
+  },
+  {
+    "documentId": 110412826576,
+    "directoryId": 877306493160,
+    "name": "bg.goods.warehouse.list.get",
+    "path": "API文档 / 库存管理API组 / bg.goods.warehouse.list.get"
+  },
+  {
+    "documentId": 110413571162,
+    "directoryId": 877307157301,
+    "name": "bg.goods.routestock.add",
+    "path": "API文档 / 库存管理API组 / bg.goods.routestock.add"
+  },
+  {
+    "documentId": 163878133721,
+    "directoryId": 931819715810,
+    "name": "bg.btg.goods.stock.route.add",
+    "path": "API文档 / 库存管理API组-PA / bg.btg.goods.stock.route.add"
+  },
+  {
+    "documentId": 161784456967,
+    "directoryId": 929727846558,
+    "name": "bg.btg.goods.stock.quantity.update",
+    "path": "API文档 / 库存管理API组-PA / bg.btg.goods.stock.quantity.update"
+  },
+  {
+    "documentId": 161784807632,
+    "directoryId": 929728959750,
+    "name": "bg.btg.goods.stock.quantity.get",
+    "path": "API文档 / 库存管理API组-PA / bg.btg.goods.stock.quantity.get"
+  },
+  {
+    "documentId": 161788826370,
+    "directoryId": 929731654843,
+    "name": "bg.btg.goods.stock.warehouse.list.get",
+    "path": "API文档 / 库存管理API组-PA / bg.btg.goods.stock.warehouse.list.get"
+  },
+  {
+    "documentId": 163893273550,
+    "directoryId": 931834215788,
+    "name": "bg.qtg.stock.virtualinventoryjit.get",
+    "path": "API文档 / 库存管理API组-PA / bg.qtg.stock.virtualinventoryjit.get"
+  },
+  {
+    "documentId": 161800521047,
+    "directoryId": 929747124710,
+    "name": "bg.qtg.stock.virtualinventoryjit.edit",
+    "path": "API文档 / 库存管理API组-PA / bg.qtg.stock.virtualinventoryjit.edit"
+  },
+  {
+    "documentId": 110417602731,
+    "directoryId": 877312568691,
+    "name": "bg.compliancepicture.get",
+    "path": "API文档 / 图片处理API组 / bg.compliancepicture.get"
+  },
+  {
+    "documentId": 110419825724,
+    "directoryId": 877314478665,
+    "name": "bg.algo.dimension.image.check",
+    "path": "API文档 / 图片处理API组 / bg.algo.dimension.image.check"
+  },
+  {
+    "documentId": 110421115702,
+    "directoryId": 877315400953,
+    "name": "bg.algo.dimension.image.check.result",
+    "path": "API文档 / 图片处理API组 / bg.algo.dimension.image.check.result"
+  },
+  {
+    "documentId": 110423929296,
+    "directoryId": 877319222238,
+    "name": "bg.algo.image.translate.result",
+    "path": "API文档 / 图片处理API组 / bg.algo.image.translate.result"
+  },
+  {
+    "documentId": 110422855741,
+    "directoryId": 877317634802,
+    "name": "bg.algo.image.translate",
+    "path": "API文档 / 图片处理API组 / bg.algo.image.translate"
+  },
+  {
+    "documentId": 161798192947,
+    "directoryId": 929743122710,
+    "name": "bg.goods.image.upload.global",
+    "path": "API文档 / 图片处理API组-PA / bg.goods.image.upload.global"
+  },
+  {
+    "documentId": 163889547917,
+    "directoryId": 931831117226,
+    "name": "bg.goods.texttopicture.add.global",
+    "path": "API文档 / 图片处理API组-PA / bg.goods.texttopicture.add.global"
+  },
+  {
+    "documentId": 163890793237,
+    "directoryId": 931832124814,
+    "name": "bg.glo.picturecompression.get",
+    "path": "API文档 / 图片处理API组-PA / bg.glo.picturecompression.get"
+  },
+  {
+    "documentId": 161798982727,
+    "directoryId": 929744601978,
+    "name": "bg.glo.colorimageurl.get",
+    "path": "API文档 / 图片处理API组-PA / bg.glo.colorimageurl.get"
+  },
+  {
+    "documentId": 161799777381,
+    "directoryId": 929745291948,
+    "name": "bg.glo.fancy.image.cm2in",
+    "path": "API文档 / 图片处理API组-PA / bg.glo.fancy.image.cm2in"
+  },
+  {
+    "documentId": 163894906159,
+    "directoryId": 931836881413,
+    "name": "bg.compliancepicture.get.global",
+    "path": "API文档 / 图片处理API组-PA / bg.compliancepicture.get.global"
+  },
+  {
+    "documentId": 163895659721,
+    "directoryId": 931837530976,
+    "name": "bg.algo.image.translate.global",
+    "path": "API文档 / 图片处理API组-PA / bg.algo.image.translate.global"
+  },
+  {
+    "documentId": 163896836398,
+    "directoryId": 931838146384,
+    "name": "bg.algo.image.translate.result.global",
+    "path": "API文档 / 图片处理API组-PA / bg.algo.image.translate.result.global"
+  },
+  {
+    "documentId": 110425240212,
+    "directoryId": 877320754990,
+    "name": "bg.goods.instructions.upload",
+    "path": "API文档 / 说明书API组 / bg.goods.instructions.upload"
+  },
+  {
+    "documentId": 110426288314,
+    "directoryId": 877322448059,
+    "name": "bg.goods.instructionslanguages.get",
+    "path": "API文档 / 说明书API组 / bg.goods.instructionslanguages.get"
+  },
+  {
+    "documentId": 110427097167,
+    "directoryId": 877323323256,
+    "name": "bg.goods.instructionstranslation.get",
+    "path": "API文档 / 说明书API组 / bg.goods.instructionstranslation.get"
+  },
+  {
+    "documentId": 110427776732,
+    "directoryId": 877324169548,
+    "name": "bg.goods.translationresult.get",
+    "path": "API文档 / 说明书API组 / bg.goods.translationresult.get"
+  },
+  {
+    "documentId": 133470614111,
+    "directoryId": 900363340240,
+    "name": "bg.goods.catsmandatory.get",
+    "path": "API文档 / 说明书API组 / bg.goods.catsmandatory.get"
+  },
+  {
+    "documentId": 157593801811,
+    "directoryId": 924487751531,
+    "name": "bg.glo.goods.edit.guide.file",
+    "path": "API文档 / 说明书API组-PA / bg.glo.goods.edit.guide.file"
+  },
+  {
+    "documentId": 167022429916,
+    "directoryId": 934964084137,
+    "name": "bg.glo.goods.instructions.upload",
+    "path": "API文档 / 说明书API组-PA / bg.glo.goods.instructions.upload"
+  },
+  {
+    "documentId": 110430695856,
+    "directoryId": 877327073796,
+    "name": "bg.goods.cats.get",
+    "path": "API文档 / 类目属性API组 / bg.goods.cats.get"
+  },
+  {
+    "documentId": 110431556557,
+    "directoryId": 877328004022,
+    "name": "bg.goods.attrs.get",
+    "path": "API文档 / 类目属性API组 / bg.goods.attrs.get"
+  },
+  {
+    "documentId": 110432749383,
+    "directoryId": 877329273263,
+    "name": "bg.goods.parentspec.get",
+    "path": "API文档 / 类目属性API组 / bg.goods.parentspec.get"
+  },
+  {
+    "documentId": 110433208117,
+    "directoryId": 877330657708,
+    "name": "bg.goods.spec.create",
+    "path": "API文档 / 类目属性API组 / bg.goods.spec.create"
+  },
+  {
+    "documentId": 110435680586,
+    "directoryId": 877332258227,
+    "name": "bg.goods.category.match",
+    "path": "API文档 / 类目属性API组 / bg.goods.category.match"
+  },
+  {
+    "documentId": 110437041433,
+    "directoryId": 877333477871,
+    "name": "bg.goods.category.mapping",
+    "path": "API文档 / 类目属性API组 / bg.goods.category.mapping"
+  },
+  {
+    "documentId": 110438602787,
+    "directoryId": 877335725050,
+    "name": "bg.goods.attribute.mapping",
+    "path": "API文档 / 类目属性API组 / bg.goods.attribute.mapping"
+  },
+  {
+    "documentId": 145003263291,
+    "directoryId": 912943934304,
+    "name": "bg.goods.accessories.get",
+    "path": "API文档 / 类目属性API组 / bg.goods.accessories.get"
+  },
+  {
+    "documentId": 153391464522,
+    "directoryId": 921332758769,
+    "name": "bg.vehicle.library.prop.dependency.query",
+    "path": "API文档 / 类目属性API组 / bg.vehicle.library.prop.dependency.query"
+  },
+  {
+    "documentId": 154439743997,
+    "directoryId": 922381252884,
+    "name": "bg.vehicle.library.query",
+    "path": "API文档 / 类目属性API组 / bg.vehicle.library.query"
+  },
+  {
+    "documentId": 153397295225,
+    "directoryId": 921339267612,
+    "name": "bg.glo.goods.photorecommendationcategory.get",
+    "path": "API文档 / 类目属性API组 / bg.glo.goods.photorecommendationcategory.get"
+  },
+  {
+    "documentId": 157594687713,
+    "directoryId": 924490387484,
+    "name": "bg.glo.goods.catsmandatory.get",
+    "path": "API文档 / 类目属性API组-PA / bg.glo.goods.catsmandatory.get"
+  },
+  {
+    "documentId": 159685336883,
+    "directoryId": 927626811283,
+    "name": "bg.goods.redress.correctrecord.query",
+    "path": "API文档 / 类目属性API组-PA / bg.goods.redress.correctrecord.query"
+  },
+  {
+    "documentId": 159685938183,
+    "directoryId": 927627255758,
+    "name": "bg.goods.redress.optionalcategory.correct",
+    "path": "API文档 / 类目属性API组-PA / bg.goods.redress.optionalcategory.correct"
+  },
+  {
+    "documentId": 161801901563,
+    "directoryId": 929747769955,
+    "name": "bg.glo.goods.parentspec.get",
+    "path": "API文档 / 类目属性API组-PA / bg.glo.goods.parentspec.get"
+  },
+  {
+    "documentId": 163900526394,
+    "directoryId": 931841951080,
+    "name": "bg.glo.goods.spec.create",
+    "path": "API文档 / 类目属性API组-PA / bg.glo.goods.spec.create"
+  },
+  {
+    "documentId": 161803420551,
+    "directoryId": 929748813829,
+    "name": "bg.glo.goods.accessories.get",
+    "path": "API文档 / 类目属性API组-PA / bg.glo.goods.accessories.get"
+  },
+  {
+    "documentId": 165974209566,
+    "directoryId": 933915727207,
+    "name": "bg.goods.attribute.mapping.global",
+    "path": "API文档 / 类目属性API组-PA / bg.goods.attribute.mapping.global"
+  },
+  {
+    "documentId": 154444274397,
+    "directoryId": 922385371829,
+    "name": "bg.goods.video.upload.sign.get.global",
+    "path": "API文档 / 视频上传API组 / bg.goods.video.upload.sign.get.global"
+  },
+  {
+    "documentId": 154445387103,
+    "directoryId": 922387061211,
+    "name": "bg.goods.big.video.upload.result.get.global",
+    "path": "API文档 / 视频上传API组 / bg.goods.big.video.upload.result.get.global"
+  },
+  {
+    "documentId": 149198083286,
+    "directoryId": 917139576842,
+    "name": "视频上传流程",
+    "path": "API文档 / 视频上传API组 / 视频上传流程"
+  },
+  {
+    "documentId": 110446553021,
+    "directoryId": 877347300105,
+    "name": "bg.goods.sizecharts.get",
+    "path": "API文档 / 尺码表API组 / bg.goods.sizecharts.get"
+  },
+  {
+    "documentId": 110448505388,
+    "directoryId": 877348687822,
+    "name": "bg.goods.sizecharts.template.create",
+    "path": "API文档 / 尺码表API组 / bg.goods.sizecharts.template.create"
+  },
+  {
+    "documentId": 110449030124,
+    "directoryId": 877348824010,
+    "name": "bg.goods.sizecharts.class.get",
+    "path": "API文档 / 尺码表API组 / bg.goods.sizecharts.class.get"
+  },
+  {
+    "documentId": 110450351642,
+    "directoryId": 877350073467,
+    "name": "bg.goods.sizecharts.create",
+    "path": "API文档 / 尺码表API组 / bg.goods.sizecharts.create"
+  },
+  {
+    "documentId": 110451116743,
+    "directoryId": 877350954517,
+    "name": "bg.goods.sizecharts.settings.get",
+    "path": "API文档 / 尺码表API组 / bg.goods.sizecharts.settings.get"
+  },
+  {
+    "documentId": 110452286733,
+    "directoryId": 877352774367,
+    "name": "bg.goods.imagesizechart.get",
+    "path": "API文档 / 尺码表API组 / bg.goods.imagesizechart.get"
+  },
+  {
+    "documentId": 110453239603,
+    "directoryId": 877353491299,
+    "name": "bg.goods.sizecharts.meta.get",
+    "path": "API文档 / 尺码表API组 / bg.goods.sizecharts.meta.get"
+  },
+  {
+    "documentId": 156543856261,
+    "directoryId": 925536879257,
+    "name": "bg.glo.goods.size.template.edit",
+    "path": "API文档 / 尺码表API组-PA / bg.glo.goods.size.template.edit"
+  },
+  {
+    "documentId": 110442427975,
+    "directoryId": 877341788052,
+    "name": "bg.modelinfo.get",
+    "path": "API文档 / 商品模特试穿API组 / bg.modelinfo.get"
+  },
+  {
+    "documentId": 110443629462,
+    "directoryId": 877343110579,
+    "name": "bg.modelcats.get",
+    "path": "API文档 / 商品模特试穿API组 / bg.modelcats.get"
+  },
+  {
+    "documentId": 110445265368,
+    "directoryId": 877344447432,
+    "name": "bg.modelinfo.add",
+    "path": "API文档 / 商品模特试穿API组 / bg.modelinfo.add"
+  },
+  {
+    "documentId": 110445591901,
+    "directoryId": 877344987565,
+    "name": "bg.modelinfo.edit",
+    "path": "API文档 / 商品模特试穿API组 / bg.modelinfo.edit"
+  },
+  {
+    "documentId": 110454758264,
+    "directoryId": 877355656670,
+    "name": "bg.refund.returnpackage.get",
+    "path": "API文档 / 寄样/质检/退货API组 / bg.refund.returnpackage.get"
+  },
+  {
+    "documentId": 110455629859,
+    "directoryId": 877356156839,
+    "name": "bg.refund.returnpackagedetail.get",
+    "path": "API文档 / 寄样/质检/退货API组 / bg.refund.returnpackagedetail.get"
+  },
+  {
+    "documentId": 110456992584,
+    "directoryId": 877357625845,
+    "name": "bg.refund.returnpackagelist.get",
+    "path": "API文档 / 寄样/质检/退货API组 / bg.refund.returnpackagelist.get"
+  },
+  {
+    "documentId": 110457222771,
+    "directoryId": 877358586514,
+    "name": "bg.goods.qualityinspection.get",
+    "path": "API文档 / 寄样/质检/退货API组 / bg.goods.qualityinspection.get"
+  },
+  {
+    "documentId": 110458731481,
+    "directoryId": 877360192843,
+    "name": "bg.goods.qualityinspectiondetail.get",
+    "path": "API文档 / 寄样/质检/退货API组 / bg.goods.qualityinspectiondetail.get"
+  },
+  {
+    "documentId": 132423940200,
+    "directoryId": 899316604827,
+    "name": "bg.sample.order.get",
+    "path": "API文档 / 寄样/质检/退货API组 / bg.sample.order.get"
+  },
+  {
+    "documentId": 132424831566,
+    "directoryId": 899318389808,
+    "name": "bg.sample.send",
+    "path": "API文档 / 寄样/质检/退货API组 / bg.sample.send"
+  },
+  {
+    "documentId": 110460846091,
+    "directoryId": 877362437763,
+    "name": "bg.shiporder.staging.get",
+    "path": "API文档 / 备货及发货API组 / bg.shiporder.staging.get"
+  },
+  {
+    "documentId": 110462180030,
+    "directoryId": 877363521599,
+    "name": "bg.shiporderv3.create",
+    "path": "API文档 / 备货及发货API组 / bg.shiporderv3.create"
+  },
+  {
+    "documentId": 110462747906,
+    "directoryId": 877365095165,
+    "name": "bg.shiporder.staging.add",
+    "path": "API文档 / 备货及发货API组 / bg.shiporder.staging.add"
+  },
+  {
+    "documentId": 110463344890,
+    "directoryId": 877365979882,
+    "name": "bg.shiporder.cancel",
+    "path": "API文档 / 备货及发货API组 / bg.shiporder.cancel"
+  },
+  {
+    "documentId": 110464367715,
+    "directoryId": 877366803148,
+    "name": "bg.shiporderv2.get",
+    "path": "API文档 / 备货及发货API组 / bg.shiporderv2.get"
+  },
+  {
+    "documentId": 110465747497,
+    "directoryId": 877368590889,
+    "name": "bg.mall.address.add",
+    "path": "API文档 / 备货及发货API组 / bg.mall.address.add"
+  },
+  {
+    "documentId": 110467273278,
+    "directoryId": 877369025160,
+    "name": "bg.mall.address.get",
+    "path": "API文档 / 备货及发货API组 / bg.mall.address.get"
+  },
+  {
+    "documentId": 110467904554,
+    "directoryId": 877369974057,
+    "name": "bg.logistics.company.get",
+    "path": "API文档 / 备货及发货API组 / bg.logistics.company.get"
+  },
+  {
+    "documentId": 110469268084,
+    "directoryId": 877371096318,
+    "name": "bg.shiporder.packing.send",
+    "path": "API文档 / 备货及发货API组 / bg.shiporder.packing.send"
+  },
+  {
+    "documentId": 110469926009,
+    "directoryId": 877372462318,
+    "name": "bg.shiporder.packing.match",
+    "path": "API文档 / 备货及发货API组 / bg.shiporder.packing.match"
+  },
+  {
+    "documentId": 110472527079,
+    "directoryId": 877374260423,
+    "name": "bg.shiporder.package.get",
+    "path": "API文档 / 备货及发货API组 / bg.shiporder.package.get"
+  },
+  {
+    "documentId": 133470004041,
+    "directoryId": 900362063372,
+    "name": "bg.shiporder.package.edit",
+    "path": "API文档 / 备货及发货API组 / bg.shiporder.package.edit"
+  },
+  {
+    "documentId": 110473437344,
+    "directoryId": 877375480432,
+    "name": "bg.shiporder.receiveaddressv2.get",
+    "path": "API文档 / 备货及发货API组 / bg.shiporder.receiveaddressv2.get"
+  },
+  {
+    "documentId": 110473878324,
+    "directoryId": 877376122122,
+    "name": "bg.shiporder.logisticsorder.match",
+    "path": "API文档 / 备货及发货API组 / bg.shiporder.logisticsorder.match"
+  },
+  {
+    "documentId": 110475194321,
+    "directoryId": 877378100662,
+    "name": "bg.shiporder.logistics.get",
+    "path": "API文档 / 备货及发货API组 / bg.shiporder.logistics.get"
+  },
+  {
+    "documentId": 110476307899,
+    "directoryId": 877378826334,
+    "name": "bg.shiporder.logistics.change",
+    "path": "API文档 / 备货及发货API组 / bg.shiporder.logistics.change"
+  },
+  {
+    "documentId": 110477283380,
+    "directoryId": 877379616150,
+    "name": "bg.purchaseorderv2.get",
+    "path": "API文档 / 备货及发货API组 / bg.purchaseorderv2.get"
+  },
+  {
+    "documentId": 110478086971,
+    "directoryId": 877380983051,
+    "name": "bg.purchaseorder.apply",
+    "path": "API文档 / 备货及发货API组 / bg.purchaseorder.apply"
+  },
+  {
+    "documentId": 119837142216,
+    "directoryId": 886730016425,
+    "name": "bg.shiporderv3.logisticsmatch.get",
+    "path": "API文档 / 备货及发货API组 / bg.shiporderv3.logisticsmatch.get"
+  },
+  {
+    "documentId": 154448632227,
+    "directoryId": 922390279809,
+    "name": "bg.purchaseorder.edit",
+    "path": "API文档 / 备货及发货API组 / bg.purchaseorder.edit"
+  },
+  {
+    "documentId": 159683986650,
+    "directoryId": 927625458896,
+    "name": "bg.predict.volume.get",
+    "path": "API文档 / 备货及发货API组 / bg.predict.volume.get"
+  },
+  {
+    "documentId": 163898646605,
+    "directoryId": 931839452482,
+    "name": "bg.purchaseorder.cancel",
+    "path": "API文档 / 备货及发货API组 / bg.purchaseorder.cancel"
+  },
+  {
+    "documentId": 142907503232,
+    "directoryId": 910849146238,
+    "name": "bg.logistics.boxmarkinfo.get",
+    "path": "API文档 / 运单标签&箱唛 / bg.logistics.boxmarkinfo.get"
+  },
+  {
+    "documentId": 161790420507,
+    "directoryId": 929734542314,
+    "name": "bg.shiporder.express.note.get",
+    "path": "API文档 / 运单标签&箱唛 / bg.shiporder.express.note.get"
+  },
+  {
+    "documentId": 142906383832,
+    "directoryId": 910847737016,
+    "name": "箱唛打印说明",
+    "path": "API文档 / 运单标签&箱唛 / 箱唛打印说明"
+  },
+  {
+    "documentId": 163885777959,
+    "directoryId": 931827203865,
+    "name": "运单标签打印说明",
+    "path": "API文档 / 运单标签&箱唛 / 运单标签打印说明"
+  },
+  {
+    "documentId": 163884783129,
+    "directoryId": 931825798694,
+    "name": "条码打印说明",
+    "path": "API文档 / 商品条码API组-PA / 条码打印说明"
+  },
+  {
+    "documentId": 157588780560,
+    "directoryId": 924483272975,
+    "name": "bg.glo.goods.custom.label.get",
+    "path": "API文档 / 商品条码API组-PA / bg.glo.goods.custom.label.get"
+  },
+  {
+    "documentId": 156539068659,
+    "directoryId": 925530254496,
+    "name": "bg.glo.goods.labelv2.get",
+    "path": "API文档 / 商品条码API组-PA / bg.glo.goods.labelv2.get"
+  },
+  {
+    "documentId": 110482379690,
+    "directoryId": 877385749076,
+    "name": "bg.goods.salesv2.get",
+    "path": "API文档 / 销售API组 / bg.goods.salesv2.get"
+  },
+  {
+    "documentId": 128228362562,
+    "directoryId": 895122902657,
+    "name": "bg.marketing.activity.list.get",
+    "path": "API文档 / 活动API组 / bg.marketing.activity.list.get"
+  },
+  {
+    "documentId": 128227304852,
+    "directoryId": 895121252332,
+    "name": "bg.marketing.activity.detail.get",
+    "path": "API文档 / 活动API组 / bg.marketing.activity.detail.get"
+  },
+  {
+    "documentId": 128225196698,
+    "directoryId": 895119781318,
+    "name": "bg.marketing.activity.product.get",
+    "path": "API文档 / 活动API组 / bg.marketing.activity.product.get"
+  },
+  {
+    "documentId": 128230009462,
+    "directoryId": 895123255220,
+    "name": "bg.marketing.activity.session.list.get",
+    "path": "API文档 / 活动API组 / bg.marketing.activity.session.list.get"
+  },
+  {
+    "documentId": 128226714122,
+    "directoryId": 895120930798,
+    "name": "bg.marketing.activity.enroll.submit",
+    "path": "API文档 / 活动API组 / bg.marketing.activity.enroll.submit"
+  },
+  {
+    "documentId": 135565663340,
+    "directoryId": 902458032485,
+    "name": "bg.marketing.activity.enroll.list.get",
+    "path": "API文档 / 活动API组 / bg.marketing.activity.enroll.list.get"
+  },
+  {
+    "documentId": 161789751076,
+    "directoryId": 929733196012,
+    "name": "仅自研应用特殊申请通过后使用",
+    "path": "API文档 / 活动API组-PA / 仅自研应用特殊申请通过后使用"
+  },
+  {
+    "documentId": 157597196095,
+    "directoryId": 924492762131,
+    "name": "bg.marketing.activity.detail.get.global",
+    "path": "API文档 / 活动API组-PA / bg.marketing.activity.detail.get.global"
+  },
+  {
+    "documentId": 156545880224,
+    "directoryId": 925541647527,
+    "name": "bg.marketing.activity.list.get.global",
+    "path": "API文档 / 活动API组-PA / bg.marketing.activity.list.get.global"
+  },
+  {
+    "documentId": 156546883031,
+    "directoryId": 925542694225,
+    "name": "bg.marketing.activity.product.get.global",
+    "path": "API文档 / 活动API组-PA / bg.marketing.activity.product.get.global"
+  },
+  {
+    "documentId": 156548140039,
+    "directoryId": 925544038104,
+    "name": "bg.marketing.activity.session.list.get.global",
+    "path": "API文档 / 活动API组-PA / bg.marketing.activity.session.list.get.global"
+  },
+  {
+    "documentId": 156548639609,
+    "directoryId": 925545287212,
+    "name": "bg.marketing.activity.enroll.list.get.global",
+    "path": "API文档 / 活动API组-PA / bg.marketing.activity.enroll.list.get.global"
+  },
+  {
+    "documentId": 156549712777,
+    "directoryId": 925545774394,
+    "name": "bg.marketing.activity.enroll.submit.global",
+    "path": "API文档 / 活动API组-PA / bg.marketing.activity.enroll.submit.global"
+  },
+  {
+    "documentId": 114596062546,
+    "directoryId": 881490244071,
+    "name": "bg.mall.info.get",
+    "path": "API文档 / 基础API组 / bg.mall.info.get"
+  },
+  {
+    "documentId": 114597179588,
+    "directoryId": 881490740978,
+    "name": "bg.open.accesstoken.info.get",
+    "path": "API文档 / 基础API组 / bg.open.accesstoken.info.get"
+  },
+  {
+    "documentId": 161780397596,
+    "directoryId": 929722395417,
+    "name": "bg.open.accesstoken.info.get.global",
+    "path": "API文档 / 基础API组-PA / bg.open.accesstoken.info.get.global"
+  },
+  {
+    "documentId": 131371264628,
+    "directoryId": 898264107502,
+    "name": "bg.goods.update",
+    "path": "API文档 / 编辑API组 / bg.goods.update"
+  },
+  {
+    "documentId": 131372855744,
+    "directoryId": 898264747556,
+    "name": "bg.goods.edit",
+    "path": "API文档 / 编辑API组 / bg.goods.edit"
+  },
+  {
+    "documentId": 131373481358,
+    "directoryId": 898265919235,
+    "name": "bg.goods.edit.sensitive.attr",
+    "path": "API文档 / 编辑API组 / bg.goods.edit.sensitive.attr"
+  },
+  {
+    "documentId": 131374205013,
+    "directoryId": 898267810581,
+    "name": "bg.goods.edit.task.apply",
+    "path": "API文档 / 编辑API组 / bg.goods.edit.task.apply"
+  },
+  {
+    "documentId": 131375097508,
+    "directoryId": 898268033395,
+    "name": "bg.goods.edit.task.submit",
+    "path": "API文档 / 编辑API组 / bg.goods.edit.task.submit"
+  },
+  {
+    "documentId": 132421808984,
+    "directoryId": 899314893477,
+    "name": "bg.goods.edit.pictures.submit",
+    "path": "API文档 / 编辑API组 / bg.goods.edit.pictures.submit"
+  },
+  {
+    "documentId": 132422925747,
+    "directoryId": 899315998808,
+    "name": "bg.goodslogistics.template.edit",
+    "path": "API文档 / 编辑API组 / bg.goodslogistics.template.edit"
+  },
+  {
+    "documentId": 133468826840,
+    "directoryId": 900361168169,
+    "name": "bg.goods.edit.property",
+    "path": "API文档 / 编辑API组 / bg.goods.edit.property"
+  },
+  {
+    "documentId": 132427617587,
+    "directoryId": 899319938658,
+    "name": "bg.goods.edit.guide.file",
+    "path": "API文档 / 编辑API组 / bg.goods.edit.guide.file"
+  },
+  {
+    "documentId": 150246653502,
+    "directoryId": 918188622978,
+    "name": "bg.goods.add.property",
+    "path": "API文档 / 编辑API组 / bg.goods.add.property"
+  },
+  {
+    "documentId": 157589832189,
+    "directoryId": 924483837164,
+    "name": "bg.glo.goods.edit.task.submit",
+    "path": "API文档 / 编辑API组-PA / bg.glo.goods.edit.task.submit"
+  },
+  {
+    "documentId": 157591481042,
+    "directoryId": 924485149181,
+    "name": "bg.glo.goods.edit.sensitive.attr",
+    "path": "API文档 / 编辑API组-PA / bg.glo.goods.edit.sensitive.attr"
+  },
+  {
+    "documentId": 157592415729,
+    "directoryId": 924486362213,
+    "name": "bg.glo.goods.edit.pictures.submit",
+    "path": "API文档 / 编辑API组-PA / bg.glo.goods.edit.pictures.submit"
+  },
+  {
+    "documentId": 156540724785,
+    "directoryId": 925532416793,
+    "name": "bg.glo.goods.update",
+    "path": "API文档 / 编辑API组-PA / bg.glo.goods.update"
+  },
+  {
+    "documentId": 156541111659,
+    "directoryId": 925533793591,
+    "name": "bg.glo.goods.add.property",
+    "path": "API文档 / 编辑API组-PA / bg.glo.goods.add.property"
+  },
+  {
+    "documentId": 157593309420,
+    "directoryId": 924487372748,
+    "name": "bg.glo.goods.edit.property",
+    "path": "API文档 / 编辑API组-PA / bg.glo.goods.edit.property"
+  },
+  {
+    "documentId": 156542282370,
+    "directoryId": 925534357132,
+    "name": "bg.glo.goodslogistics.template.edit",
+    "path": "API文档 / 编辑API组-PA / bg.glo.goodslogistics.template.edit"
+  },
+  {
+    "documentId": 164927145021,
+    "directoryId": 932868418031,
+    "name": "bg.glo.goods.edit.task.apply",
+    "path": "API文档 / 编辑API组-PA / bg.glo.goods.edit.task.apply"
+  },
+  {
+    "documentId": 134517245320,
+    "directoryId": 901410718805,
+    "name": "bg.goods.price.list.get",
+    "path": "API文档 / 申报价/核价/调价API组 / bg.goods.price.list.get"
+  },
+  {
+    "documentId": 132428745890,
+    "directoryId": 899321422992,
+    "name": "bg.price.review.page.query",
+    "path": "API文档 / 申报价/核价/调价API组 / bg.price.review.page.query"
+  },
+  {
+    "documentId": 134517883876,
+    "directoryId": 901412462419,
+    "name": "bg.price.review.confirm",
+    "path": "API文档 / 申报价/核价/调价API组 / bg.price.review.confirm"
+  },
+  {
+    "documentId": 134518927673,
+    "directoryId": 901413494559,
+    "name": "bg.price.review.reject",
+    "path": "API文档 / 申报价/核价/调价API组 / bg.price.review.reject"
+  },
+  {
+    "documentId": 134520592633,
+    "directoryId": 901413934857,
+    "name": "bg.semi.adjust.price.page.query",
+    "path": "API文档 / 申报价/核价/调价API组 / bg.semi.adjust.price.page.query"
+  },
+  {
+    "documentId": 134521523476,
+    "directoryId": 901415202031,
+    "name": "bg.semi.adjust.price.batch.review",
+    "path": "API文档 / 申报价/核价/调价API组 / bg.semi.adjust.price.batch.review"
+  },
+  {
+    "documentId": 140808409141,
+    "directoryId": 908749899377,
+    "name": "bg.full.adjust.price.batch.review",
+    "path": "API文档 / 申报价/核价/调价API组 / bg.full.adjust.price.batch.review"
+  },
+  {
+    "documentId": 140809402726,
+    "directoryId": 908751475686,
+    "name": "bg.full.adjust.price.page.query",
+    "path": "API文档 / 申报价/核价/调价API组 / bg.full.adjust.price.page.query"
+  },
+  {
+    "documentId": 163883025113,
+    "directoryId": 931824917972,
+    "name": "仅自研应用单独申请后调用",
+    "path": "API文档 / 申报价/核价/调价API组-PA / 仅自研应用单独申请后调用"
+  },
+  {
+    "documentId": 157596488384,
+    "directoryId": 924491336796,
+    "name": "bg.glo.goods.price.list.get",
+    "path": "API文档 / 申报价/核价/调价API组-PA / bg.glo.goods.price.list.get"
+  },
+  {
+    "documentId": 163878891213,
+    "directoryId": 931820964658,
+    "name": "bg.semi.adjust.price.batch.review.order",
+    "path": "API文档 / 申报价/核价/调价API组-PA / bg.semi.adjust.price.batch.review.order"
+  },
+  {
+    "documentId": 163880165860,
+    "directoryId": 931822060910,
+    "name": "bg.semi.adjust.price.page.query.order",
+    "path": "API文档 / 申报价/核价/调价API组-PA / bg.semi.adjust.price.page.query.order"
+  },
+  {
+    "documentId": 161785878790,
+    "directoryId": 929730272138,
+    "name": "bg.semi.price.review.page.query.order",
+    "path": "API文档 / 申报价/核价/调价API组-PA / bg.semi.price.review.page.query.order"
+  },
+  {
+    "documentId": 161787103136,
+    "directoryId": 929730556932,
+    "name": "bg.semi.price.review.confirm.order",
+    "path": "API文档 / 申报价/核价/调价API组-PA / bg.semi.price.review.confirm.order"
+  },
+  {
+    "documentId": 163881680541,
+    "directoryId": 931823247765,
+    "name": "bg.semi.price.review.reject.order",
+    "path": "API文档 / 申报价/核价/调价API组-PA / bg.semi.price.review.reject.order"
+  },
+  {
+    "documentId": 147108234583,
+    "directoryId": 915050521341,
+    "name": "bg.jitmode.activate",
+    "path": "API文档 / JIT组 / bg.jitmode.activate"
+  },
+  {
+    "documentId": 148152598703,
+    "directoryId": 916094805907,
+    "name": "bg.virtualinventoryjit.get",
+    "path": "API文档 / JIT组 / bg.virtualinventoryjit.get"
+  },
+  {
+    "documentId": 148153613363,
+    "directoryId": 916096164969,
+    "name": "bg.virtualinventoryjit.edit",
+    "path": "API文档 / JIT组 / bg.virtualinventoryjit.edit"
+  },
+  {
+    "documentId": 148154426303,
+    "directoryId": 916097664850,
+    "name": "bg.virtualinventoryjit.rule.sign",
+    "path": "API文档 / JIT组 / bg.virtualinventoryjit.rule.sign"
+  },
+  {
+    "documentId": 147109024522,
+    "directoryId": 915052173981,
+    "name": "bg.virtualinventoryjit.rule.get",
+    "path": "API文档 / JIT组 / bg.virtualinventoryjit.rule.get"
+  },
+  {
+    "documentId": 157597976402,
+    "directoryId": 924495543423,
+    "name": "bg.glo.jitmode.activate",
+    "path": "API文档 / JIT组-PA / bg.glo.jitmode.activate"
+  },
+  {
+    "documentId": 163886381789,
+    "directoryId": 931828091626,
+    "name": "bg.glo.searchrec.ad.create",
+    "path": "API文档 / 全托广告API组-PA / bg.glo.searchrec.ad.create"
+  },
+  {
+    "documentId": 161796712401,
+    "directoryId": 929741160712,
+    "name": "bg.glo.searchrec.ad.modify",
+    "path": "API文档 / 全托广告API组-PA / bg.glo.searchrec.ad.modify"
+  },
+  {
+    "documentId": 163888079686,
+    "directoryId": 931828782212,
+    "name": "bg.glo.searchrec.ad.batch.modify",
+    "path": "API文档 / 全托广告API组-PA / bg.glo.searchrec.ad.batch.modify"
+  },
+  {
+    "documentId": 161791102930,
+    "directoryId": 929735887634,
+    "name": "bg.glo.searchrec.ad.roas.pred",
+    "path": "API文档 / 全托广告API组-PA / bg.glo.searchrec.ad.roas.pred"
+  },
+  {
+    "documentId": 161792757842,
+    "directoryId": 929736716892,
+    "name": "bg.glo.searchrec.ad.detail.query",
+    "path": "API文档 / 全托广告API组-PA / bg.glo.searchrec.ad.detail.query"
+  },
+  {
+    "documentId": 161793957243,
+    "directoryId": 929738220635,
+    "name": "bg.glo.searchrec.ad.goods.create.query",
+    "path": "API文档 / 全托广告API组-PA / bg.glo.searchrec.ad.goods.create.query"
+  },
+  {
+    "documentId": 163889199468,
+    "directoryId": 931830463288,
+    "name": "bg.glo.searchrec.ad.log.query",
+    "path": "API文档 / 全托广告API组-PA / bg.glo.searchrec.ad.log.query"
+  },
+  {
+    "documentId": 161794700469,
+    "directoryId": 929739237497,
+    "name": "bg.glo.searchrec.ad.reports.goods.query",
+    "path": "API文档 / 全托广告API组-PA / bg.glo.searchrec.ad.reports.goods.query"
+  },
+  {
+    "documentId": 161795303147,
+    "directoryId": 929740420731,
+    "name": "bg.glo.searchrec.ad.reports.mall.query",
+    "path": "API文档 / 全托广告API组-PA / bg.glo.searchrec.ad.reports.mall.query"
+  },
+  {
+    "documentId": 161804410664,
+    "directoryId": 929749856571,
+    "name": "bg.qtg.stock.virtualinventoryjit.get",
+    "path": "API文档 / 全托管库存API组-PA / bg.qtg.stock.virtualinventoryjit.get"
+  },
+  {
+    "documentId": 163901654814,
+    "directoryId": 931843405940,
+    "name": "bg.qtg.stock.virtualinventoryjit.edit",
+    "path": "API文档 / 全托管库存API组-PA / bg.qtg.stock.virtualinventoryjit.edit"
+  },
+  {
+    "documentId": 129273750890,
+    "directoryId": 896167235113,
+    "name": "签名规则",
+    "path": "开发者文档 / 开发指南 / 签名规则"
+  },
+  {
+    "documentId": 129276807107,
+    "directoryId": 896168820140,
+    "name": "鉴权信息",
+    "path": "开发者文档 / 开发指南 / 鉴权信息"
+  },
+  {
+    "documentId": 132429173222,
+    "directoryId": 899322689413,
+    "name": "自研专属接口",
+    "path": "开发者文档 / 开发指南 / 自研专属接口"
+  },
+  {
+    "documentId": 141858478483,
+    "directoryId": 909799935182,
+    "name": "分区说明",
+    "path": "开发者文档 / 开发指南 / 分区说明"
+  },
+  {
+    "documentId": 132420401064,
+    "directoryId": 899312840459,
+    "name": "接口列表",
+    "path": "开发者文档 / 开发指南 / 接口列表"
+  },
+  {
+    "documentId": 130322504140,
+    "directoryId": 897215162233,
+    "name": "基本信息",
+    "path": "开发者文档 / 开发指南 / 基本信息"
+  },
+  {
+    "documentId": 129279166501,
+    "directoryId": 896173561825,
+    "name": "全托履约流程",
+    "path": "开发者文档 / 调用流程 / 全托履约流程"
+  },
+  {
+    "documentId": 129278535668,
+    "directoryId": 896172443264,
+    "name": "货品发布流程",
+    "path": "开发者文档 / 调用流程 / 货品发布流程"
+  },
+  {
+    "documentId": 150248517406,
+    "directoryId": 918191803712,
+    "name": "尺码表分类",
+    "path": "开发者文档 / 数据字典 / 尺码表分类"
+  },
+  {
+    "documentId": 127177168942,
+    "directoryId": 894069632221,
+    "name": "发品-省份枚举值",
+    "path": "开发者文档 / 数据字典 / 发品-省份枚举值"
+  },
+  {
+    "documentId": 153400122150,
+    "directoryId": 921341154291,
+    "name": "部分类目模特信息必填",
+    "path": "开发者文档 / 数据字典 / 部分类目模特信息必填"
+  },
+  {
+    "documentId": 139759717684,
+    "directoryId": 907701113730,
+    "name": "定制品定制工艺层级关系",
+    "path": "开发者文档 / 数据字典 / 定制品定制工艺层级关系"
+  },
+  {
+    "documentId": 126128279515,
+    "directoryId": 893022798763,
+    "name": "半托管站点列表",
+    "path": "开发者文档 / 数据字典 / 半托管站点列表"
+  },
+  {
+    "documentId": 132430304308,
+    "directoryId": 899323233508,
+    "name": "货品名称长度限制规则",
+    "path": "开发者文档 / 数据字典 / 货品名称长度限制规则"
+  },
+  {
+    "documentId": 134523592060,
+    "directoryId": 901417326943,
+    "name": "（单码）鞋类尺码&脚长映射配置",
+    "path": "开发者文档 / 数据字典 / （单码）鞋类尺码&脚长映射配置"
+  },
+  {
+    "documentId": 159682943373,
+    "directoryId": 927624305278,
+    "name": "（双码）鞋类尺码&脚长映射配置",
+    "path": "开发者文档 / 数据字典 / （双码）鞋类尺码&脚长映射配置"
+  },
+  {
+    "documentId": 161781232534,
+    "directoryId": 929724079178,
+    "name": "车型库必填类目",
+    "path": "开发者文档 / 数据字典 / 车型库必填类目"
+  },
+  {
+    "documentId": 151293979205,
+    "directoryId": 919235879240,
+    "name": "支持底板套板的类目",
+    "path": "开发者文档 / 数据字典 / 支持底板套板的类目"
+  },
+  {
+    "documentId": 154442717054,
+    "directoryId": 922384819299,
+    "name": "半托管sku分类&净含量必填叶子类目",
+    "path": "开发者文档 / 数据字典 / 半托管sku分类&净含量必填叶子类目"
+  },
+  {
+    "documentId": 156551928165,
+    "directoryId": 925549081396,
+    "name": "承诺发货时效说明",
+    "path": "开发者文档 / 数据字典 / 承诺发货时效说明"
+  },
+  {
+    "documentId": 114595649140,
+    "directoryId": 881488516724,
+    "name": "常见问题",
+    "path": "开发者文档 / 常见问题 / 常见问题"
+  },
+  {
+    "documentId": 136614434571,
+    "directoryId": 903508418346,
+    "name": "入驻流程说明",
+    "path": "开发者文档 / 入驻流程 / 入驻流程说明"
+  }
+]
