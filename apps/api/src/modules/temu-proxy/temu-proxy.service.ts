@@ -14,7 +14,7 @@ export class TemuProxyService {
   async getCategoryChildren(shopId: string, parentCatId: number): Promise<TemuCategory[]> {
     const client = await this.clientFactory.forShop(shopId);
     const res: any = await client.call('bg.goods.cats.get', { parentCatId });
-    const list = res?.goodsCatsList ?? res?.list ?? [];
+    const list = res?.categoryDTOList ?? res?.goodsCatsList ?? res?.list ?? [];
     return (list as any[]).map((c) => ({
       catId: Number(c.catId),
       catName: String(c.catName ?? c.catEnName ?? ''),
