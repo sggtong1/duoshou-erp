@@ -57,22 +57,23 @@ export class ActivitySyncService {
         };
         const shopVisibility = mergeShopVisibility(existing?.shopVisibility ?? [], shopVisEntry);
 
-        const data = {
+        // status 状态流转由 flipStatuses() 独占。upsert update 不重置 status,
+        // 避免 closed/archived 活动每轮 cron 被翻回 open。create 时保留 'open' 作为首次落库默认。
+        const mutableData = {
           title: a.title ?? a.name ?? null,
           activityType: a.type ?? a.activityType ?? null,
           startAt: toDate(a.startTime ?? a.beginTime),
           endAt: toDate(a.endTime),
           enrollStartAt: toDate(a.enrollStartTime ?? a.signupStartTime),
           enrollEndAt: toDate(a.enrollEndTime ?? a.signupEndTime),
-          status: 'open' as const,
           shopVisibility,
           platformPayload: a,
         };
 
         const activity = await (this.prisma as any).activity.upsert({
           where: { orgId_region_platformActivityId: { orgId: shop.orgId, region: shop.region, platformActivityId } },
-          create: { orgId: shop.orgId, region: shop.region, platformActivityId, ...data },
-          update: data,
+          create: { orgId: shop.orgId, region: shop.region, platformActivityId, status: 'open', ...mutableData },
+          update: mutableData,
         });
 
         try {
