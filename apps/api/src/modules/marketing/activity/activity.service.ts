@@ -53,7 +53,8 @@ export class ActivityService {
       (this.prisma as any).activity.count({ where }),
       (this.prisma as any).activity.findMany({
         where,
-        include: { sessions: { orderBy: { startAt: 'asc' } } },
+        omit: { platformPayload: true },
+        include: { sessions: { orderBy: { startAt: 'asc' }, omit: { platformPayload: true } } },
         orderBy: [{ status: 'asc' }, { startAt: 'desc' }],
         skip: (page - 1) * pageSize,
         take: pageSize,
@@ -66,7 +67,8 @@ export class ActivityService {
   async get(orgId: string, id: string) {
     const a = await (this.prisma as any).activity.findFirst({
       where: { id, orgId },
-      include: { sessions: { orderBy: { startAt: 'asc' } } },
+      omit: { platformPayload: true },
+      include: { sessions: { orderBy: { startAt: 'asc' }, omit: { platformPayload: true } } },
     });
     if (!a) throw new NotFoundException(`Activity ${id} not found`);
     const [withAgg] = await attachAggregates(this.prisma, [a]);
