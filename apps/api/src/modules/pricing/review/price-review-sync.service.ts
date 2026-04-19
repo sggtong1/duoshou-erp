@@ -1,7 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common';
+import type Redis from 'ioredis';
 import { PrismaService } from '../../../infra/prisma.service';
 import { TemuClientFactoryService } from '../../platform/temu/temu-client-factory.service';
+import { sharedRedis } from '../../../infra/redis';
 import { pricingEndpoints } from '../pricing-endpoints';
+
+const LOCK_KEY = 'lock:price-review-sync';
+const LOCK_TTL_SECONDS = 1800;
 
 function toBigInt(x: any): bigint | null {
   if (x === null || x === undefined || x === '') return null;
@@ -13,6 +18,8 @@ function toBigInt(x: any): bigint | null {
 @Injectable()
 export class PriceReviewSyncService {
   private logger = new Logger(PriceReviewSyncService.name);
+  private get redis(): Redis { return sharedRedis(); }
+
   constructor(
     private prisma: PrismaService,
     private clientFactory: TemuClientFactoryService,
@@ -72,14 +79,26 @@ export class PriceReviewSyncService {
   }
 
   async syncAllActiveShops(orgId?: string): Promise<number> {
-    const where: any = { status: 'active' };
-    if (orgId) where.orgId = orgId;
-    const shops = await (this.prisma as any).shop.findMany({ where });
-    let total = 0;
-    for (const s of shops) {
-      try { total += await this.syncShop(s.id); }
-      catch (e: any) { this.logger.error(`shop ${s.id} sync failed: ${e.message}`); }
+    let lock: string | null = null;
+    try { lock = await this.redis.set(LOCK_KEY, '1', 'EX', LOCK_TTL_SECONDS, 'NX'); }
+    catch (e: any) { this.logger.warn(`price-review lock acquire failed: ${e.message}`); }
+    if (lock !== 'OK') {
+      this.logger.warn('price-review sync skipped (lock held or redis down)');
+      return 0;
     }
-    return total;
+    try {
+      const where: any = { status: 'active' };
+      if (orgId) where.orgId = orgId;
+      const shops = await (this.prisma as any).shop.findMany({ where });
+      let total = 0;
+      for (const s of shops) {
+        try { total += await this.syncShop(s.id); }
+        catch (e: any) { this.logger.error(`shop ${s.id} sync failed: ${e.message}`); }
+      }
+      return total;
+    } finally {
+      try { await this.redis.del(LOCK_KEY); }
+      catch (e: any) { this.logger.warn(`price-review lock release failed: ${e.message}`); }
+    }
   }
 }
