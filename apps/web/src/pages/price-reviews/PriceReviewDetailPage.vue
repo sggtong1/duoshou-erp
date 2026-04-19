@@ -1,7 +1,7 @@
 <template>
   <n-card v-if="r" :title="'核价单 ' + r.platformOrderId">
     <n-descriptions :column="2">
-      <n-descriptions-item label="SKU">{{ r.skuTitle ?? '—' }}</n-descriptions-item>
+      <n-descriptions-item label="SKU">{{ r.skuTitle ?? r.platformSkuId ?? '—' }}</n-descriptions-item>
       <n-descriptions-item label="店铺">{{ r.shop?.displayName ?? r.shop?.platformShopId }}</n-descriptions-item>
       <n-descriptions-item label="现价">
         {{ r.currentPriceCents != null ? (r.currentPriceCents / 100).toFixed(2) : '—' }} {{ r.currency }}

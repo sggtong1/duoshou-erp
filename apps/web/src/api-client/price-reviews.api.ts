@@ -4,6 +4,7 @@ export interface PriceReview {
   id: string;
   shopId: string;
   platformOrderId: string;
+  platformSkuId: string | null;
   skuTitle: string | null;
   currentPriceCents: number | null;
   suggestedPriceCents: number | null;

@@ -30,7 +30,16 @@
         <tbody>
           <tr v-for="id in selected" :key="id">
             <td>{{ store.items.find((x) => x.id === id)?.skuTitle ?? id.slice(0, 8) }}</td>
-            <td>{{ store.items.find((x) => x.id === id)?.suggestedPriceCents }}</td>
+            <td>
+              {{
+                (() => {
+                  const item = store.items.find((x) => x.id === id);
+                  return item?.suggestedPriceCents != null
+                    ? `${(item.suggestedPriceCents / 100).toFixed(2)} ${item.currency ?? ''}`
+                    : '—';
+                })()
+              }}
+            </td>
             <td><n-input-number v-model:value="counters[id]" :min="1" /></td>
           </tr>
         </tbody>
@@ -95,7 +104,7 @@ const pageCount = computed(() => Math.max(1, Math.ceil(store.total / pageSize)))
 
 const columns: any[] = [
   { type: 'selection' },
-  { title: 'SKU', key: 'skuTitle' },
+  { title: 'SKU', key: 'skuTitle', render: (r: PriceReview) => r.skuTitle ?? r.platformSkuId ?? '—' },
   { title: '店铺', key: 'shop', render: (r: PriceReview) => r.shop?.displayName ?? r.shop?.platformShopId },
   {
     title: '现价',
