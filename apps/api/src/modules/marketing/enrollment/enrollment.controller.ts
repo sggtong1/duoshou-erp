@@ -3,12 +3,17 @@ import { AuthGuard } from '../../auth/auth.guard';
 import { TenantService } from '../../tenant/tenant.service';
 import { ZodValidationPipe } from '../../../infra/zod-pipe';
 import { EnrollmentService } from './enrollment.service';
+import { EnrollmentSyncService } from './enrollment-sync.service';
 import { SubmitEnrollmentDto, type SubmitEnrollmentInput } from './enrollment.dto';
 
 @Controller('enrollments')
 @UseGuards(AuthGuard)
 export class EnrollmentController {
-  constructor(private svc: EnrollmentService, private tenant: TenantService) {}
+  constructor(
+    private svc: EnrollmentService,
+    private tenant: TenantService,
+    private syncSvc: EnrollmentSyncService,
+  ) {}
 
   @Get()
   async list(
@@ -38,5 +43,12 @@ export class EnrollmentController {
   async refresh(@Req() req: any, @Param('id') id: string) {
     const m = await this.tenant.resolveForUser(req.user);
     return this.svc.refresh(m.orgId, id);
+  }
+
+  @Post('sync/now')
+  async syncNow(@Req() req: any) {
+    const m = await this.tenant.resolveForUser(req.user);
+    const total = await this.syncSvc.syncAllActiveShops(m.orgId);
+    return { total };
   }
 }
