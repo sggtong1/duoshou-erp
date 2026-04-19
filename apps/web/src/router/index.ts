@@ -10,6 +10,7 @@ import PriceReviewDetailPage from '@/pages/price-reviews/PriceReviewDetailPage.v
 import PriceAdjustmentSubmitPage from '@/pages/price-adjustments/PriceAdjustmentSubmitPage.vue';
 import ActivityListPage from '@/pages/activities/ActivityListPage.vue';
 import ActivityDetailPage from '@/pages/activities/ActivityDetailPage.vue';
+import EnrollmentListPage from '@/pages/enrollments/EnrollmentListPage.vue';
 import { useAuthStore } from '@/stores/auth';
 
 const routes: RouteRecordRaw[] = [
@@ -25,6 +26,7 @@ const routes: RouteRecordRaw[] = [
   { path: '/price-adjustments/new', component: PriceAdjustmentSubmitPage, meta: { requiresAuth: true } },
   { path: '/activities', component: ActivityListPage, meta: { requiresAuth: true } },
   { path: '/activities/:id', component: ActivityDetailPage, meta: { requiresAuth: true } },
+  { path: '/enrollments', component: EnrollmentListPage, meta: { requiresAuth: true } },
 ];
 
 const router = createRouter({

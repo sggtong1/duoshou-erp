@@ -7,6 +7,7 @@
       <n-button @click="$router.push('/price-reviews')">核价单</n-button>
       <n-button @click="$router.push('/price-adjustments/new')">提交调价</n-button>
       <n-button @click="$router.push('/activities')">活动日历</n-button>
+      <n-button @click="$router.push('/enrollments')">已报名</n-button>
       <n-button @click="auth.logout()">退出登录</n-button>
     </n-space>
   </n-card>
