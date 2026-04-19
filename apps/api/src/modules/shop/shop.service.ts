@@ -1,5 +1,6 @@
 import { Injectable, BadRequestException, Inject } from '@nestjs/common';
-import Redis from 'ioredis';
+import type Redis from 'ioredis';
+import { sharedRedis } from '../../infra/redis';
 import { TemuClient, methods, type TemuCallContext } from '@duoshou/temu-sdk';
 import { PrismaService } from '../../infra/prisma.service';
 import { encrypt } from '../../infra/crypto';
@@ -10,11 +11,11 @@ const bgMallInfoGet: (ctx: TemuCallContext, req: any) => Promise<any> = (methods
 
 @Injectable()
 export class ShopService {
-  private redis: Redis;
-
-  constructor(private prisma: PrismaService) {
-    this.redis = new Redis(process.env.REDIS_URL ?? 'redis://localhost:6379', { lazyConnect: true });
+  private get redis(): Redis {
+    return sharedRedis();
   }
+
+  constructor(private prisma: PrismaService) {}
 
   async connect(orgId: string, input: ConnectShopInput) {
     // 1. Validate credentials via bg.mall.info.get (no rate-limiting for first-time connect,
