@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ScheduleModule } from '@nestjs/schedule';
 import { PrismaModule } from './infra/prisma.module';
 import { QueueModule } from './infra/queue.module';
 import { HealthModule } from './modules/health/health.module';
@@ -10,6 +11,17 @@ import { TemuProxyModule } from './modules/temu-proxy/temu-proxy.module';
 import { ProductModule } from './modules/product/product.module';
 
 @Module({
-  imports: [PrismaModule, QueueModule, PlatformModule, HealthModule, TenantModule, ShopModule, AuthModule, TemuProxyModule, ProductModule],
+  imports: [
+    ScheduleModule.forRoot(),
+    PrismaModule,
+    QueueModule,
+    PlatformModule,
+    HealthModule,
+    TenantModule,
+    ShopModule,
+    AuthModule,
+    TemuProxyModule,
+    ProductModule,
+  ],
 })
 export class AppModule {}
