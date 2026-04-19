@@ -62,31 +62,50 @@ export class EnrollmentSyncService {
         }
 
         const status = mapTemuStatus(item.status);
-        await (this.prisma as any).activityEnrollment.upsert({
-          where: {
-            shopId_activityId_sessionId_platformSkuId: {
-              shopId, activityId: activity.id, sessionId: sessionLocalId, platformSkuId,
+        const createData = {
+          orgId: shop.orgId, shopId,
+          activityId: activity.id,
+          sessionId: sessionLocalId,
+          platformSkuId,
+          skuTitle: item.productName ?? item.skuName ?? null,
+          activityPriceCents: item.activityPrice != null ? BigInt(Math.round(Number(item.activityPrice))) : null,
+          currency: item.currency ?? null,
+          status,
+          rejectReason: item.rejectReason ?? null,
+          platformPayload: item,
+        };
+        const updateData = {
+          status,
+          rejectReason: item.rejectReason ?? null,
+          resolvedAt: status === 'approved' || status === 'rejected' ? new Date() : undefined,
+          platformPayload: item,
+        };
+
+        // Postgres 唯一约束对 NULL 不相等,sessionId=null 时 upsert 永远走 create 造成重复。
+        // 手动 findFirst + update|create 兜底。
+        if (sessionLocalId === null) {
+          const existing = await (this.prisma as any).activityEnrollment.findFirst({
+            where: { shopId, activityId: activity.id, sessionId: null, platformSkuId },
+          });
+          if (existing) {
+            await (this.prisma as any).activityEnrollment.update({
+              where: { id: existing.id },
+              data: updateData,
+            });
+          } else {
+            await (this.prisma as any).activityEnrollment.create({ data: createData });
+          }
+        } else {
+          await (this.prisma as any).activityEnrollment.upsert({
+            where: {
+              shopId_activityId_sessionId_platformSkuId: {
+                shopId, activityId: activity.id, sessionId: sessionLocalId, platformSkuId,
+              },
             },
-          },
-          create: {
-            orgId: shop.orgId, shopId,
-            activityId: activity.id,
-            sessionId: sessionLocalId,
-            platformSkuId,
-            skuTitle: item.productName ?? item.skuName ?? null,
-            activityPriceCents: item.activityPrice != null ? BigInt(Math.round(Number(item.activityPrice))) : null,
-            currency: item.currency ?? null,
-            status,
-            rejectReason: item.rejectReason ?? null,
-            platformPayload: item,
-          },
-          update: {
-            status,
-            rejectReason: item.rejectReason ?? null,
-            resolvedAt: status === 'approved' || status === 'rejected' ? new Date() : undefined,
-            platformPayload: item,
-          },
-        });
+            create: createData,
+            update: updateData,
+          });
+        }
         touched++;
       }
       if (list.length < 50) break;
