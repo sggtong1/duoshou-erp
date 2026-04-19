@@ -46,7 +46,7 @@ export class PriceAdjustmentService {
       for (const r of records) {
         await (this.prisma as any).priceAdjustmentOrder.update({
           where: { id: r.id },
-          data: { status: 'approved', platformPayload: res, resolvedAt: new Date() },
+          data: { status: 'submitted', platformPayload: res },
         });
       }
       return { total: records.length, submittedIds: records.map((r) => r.id), platformResponse: res };
