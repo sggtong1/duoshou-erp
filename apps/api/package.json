@@ -19,6 +19,7 @@
     "@prisma/adapter-pg": "^7.7.0",
     "@prisma/client": "^7.7.0",
     "@supabase/supabase-js": "^2.103.3",
+    "dotenv": "^17.4.2",
     "ioredis": "^5.10.1",
     "pg": "^8.20.0",
     "reflect-metadata": "^0.2.2",

@@ -27,6 +27,10 @@ export class ShopService {
       shopId: 'pending',
     };
 
+    // Credential check: bg.mall.info.get returns { semiManagedMall, isThriftStore }.
+    // It doesn't expose shop_id but throws on invalid credentials, so we use it
+    // purely as a validity probe. The caller supplies platformShopId (every
+    // Temu merchant knows their own id from the seller center).
     let mallInfo: any;
     try {
       mallInfo = await bgMallInfoGet(ctx, {} as any);
@@ -34,20 +38,37 @@ export class ShopService {
       throw new BadRequestException(`Temu credential validation failed: ${e.message ?? e}`);
     }
 
-    const platformShopId = String(mallInfo?.mallId ?? mallInfo?.shopId ?? '').trim();
-    if (!platformShopId) {
-      throw new BadRequestException(`Temu API did not return a shop id. Response: ${JSON.stringify(mallInfo)}`);
+    // Cross-check the declared shopType matches what Temu reports
+    const reportedSemi = !!mallInfo?.semiManagedMall;
+    if (reportedSemi && input.shopType !== 'semi') {
+      throw new BadRequestException(`Shop type mismatch: Temu reports semi-managed, you declared '${input.shopType}'`);
     }
+    if (!reportedSemi && input.shopType !== 'full') {
+      throw new BadRequestException(`Shop type mismatch: Temu reports full-managed, you declared '${input.shopType}'`);
+    }
+
+    const platformShopId = input.platformShopId;
 
     // 2. Encrypt and persist credentials
     const key = process.env.CREDS_ENCRYPTION_KEY;
     if (!key) throw new Error('CREDS_ENCRYPTION_KEY is not set');
 
+    // Prisma Bytes requires Uint8Array<ArrayBuffer>; Node Buffer is
+    // Uint8Array<ArrayBufferLike> (TS 5.7+ generic distinguishes these).
+    // Allocate a fresh ArrayBuffer, copy bytes, and return with the narrowed
+    // generic type.
+    const toBytes = (buf: Buffer): Uint8Array<ArrayBuffer> => {
+      const ab = new ArrayBuffer(buf.length);
+      const view = new Uint8Array(ab);
+      view.set(buf);
+      return view;
+    };
+
     const creds = await this.prisma.shopCredentials.create({
       data: {
-        appKeyEncrypted: encrypt(input.appKey, key),
-        appSecretEncrypted: encrypt(input.appSecret, key),
-        accessTokenEncrypted: encrypt(input.accessToken, key),
+        appKeyEncrypted: toBytes(encrypt(input.appKey, key)),
+        appSecretEncrypted: toBytes(encrypt(input.appSecret, key)),
+        accessTokenEncrypted: toBytes(encrypt(input.accessToken, key)),
       },
     });
 

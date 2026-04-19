@@ -4,6 +4,7 @@ export const ConnectShopDto = z.object({
   appKey: z.string().min(16, 'appKey looks too short'),
   appSecret: z.string().min(16),
   accessToken: z.string().min(16),
+  platformShopId: z.string().min(1, 'Temu shop id is required'),
   shopType: z.enum(['full', 'semi']),
   region: z.enum(['cn', 'pa']),
   displayName: z.string().optional(),
