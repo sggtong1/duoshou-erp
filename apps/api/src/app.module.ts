@@ -6,8 +6,9 @@ import { ShopModule } from './modules/shop/shop.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { TenantModule } from './modules/tenant/tenant.module';
 import { PlatformModule } from './modules/platform/platform.module';
+import { TemuProxyModule } from './modules/temu-proxy/temu-proxy.module';
 
 @Module({
-  imports: [PrismaModule, QueueModule, PlatformModule, HealthModule, TenantModule, ShopModule, AuthModule],
+  imports: [PrismaModule, QueueModule, PlatformModule, HealthModule, TenantModule, ShopModule, AuthModule, TemuProxyModule],
 })
 export class AppModule {}
