@@ -7,6 +7,7 @@ import ProductListPage from '@/pages/products/ProductListPage.vue';
 import BulkJobProgressPage from '@/pages/bulk-jobs/BulkJobProgressPage.vue';
 import PriceReviewInboxPage from '@/pages/price-reviews/PriceReviewInboxPage.vue';
 import PriceReviewDetailPage from '@/pages/price-reviews/PriceReviewDetailPage.vue';
+import PriceAdjustmentSubmitPage from '@/pages/price-adjustments/PriceAdjustmentSubmitPage.vue';
 import { useAuthStore } from '@/stores/auth';
 
 const routes: RouteRecordRaw[] = [
@@ -19,6 +20,7 @@ const routes: RouteRecordRaw[] = [
   { path: '/bulk-jobs/:id', component: BulkJobProgressPage, meta: { requiresAuth: true } },
   { path: '/price-reviews', component: PriceReviewInboxPage, meta: { requiresAuth: true } },
   { path: '/price-reviews/:id', component: PriceReviewDetailPage, meta: { requiresAuth: true } },
+  { path: '/price-adjustments/new', component: PriceAdjustmentSubmitPage, meta: { requiresAuth: true } },
 ];
 
 const router = createRouter({
