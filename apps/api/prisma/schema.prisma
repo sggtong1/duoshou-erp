@@ -24,8 +24,11 @@ model Organization {
   status    String   @default("active")
   createdAt DateTime @default(now()) @map("created_at")
 
-  members Member[]
-  shops   Shop[]
+  members          Member[]
+  shops            Shop[]
+  productTemplates ProductTemplate[]
+  products         Product[]
+  bulkJobs         BulkJob[]
 
   @@map("organization")
 }
@@ -74,7 +77,115 @@ model Shop {
   org   Organization    @relation(fields: [orgId], references: [id])
   creds ShopCredentials @relation(fields: [credsVaultRef], references: [id])
 
+  products     Product[]
+  bulkJobItems BulkJobItem[]
+
   @@unique([orgId, platform, platformShopId])
   @@index([orgId, platform])
   @@map("shop")
+}
+
+model ProductTemplate {
+  id                 String   @id @default(uuid())
+  orgId              String   @map("org_id")
+  name               String
+  description        String?
+  temuCategoryId     BigInt   @map("temu_category_id")
+  temuCategoryPath   String[] @map("temu_category_path")
+  shopTypeTarget     String   @map("shop_type_target")
+  mainImageUrl       String   @map("main_image_url")
+  carouselImageUrls  String[] @map("carousel_image_urls")
+  suggestedPriceCents BigInt  @map("suggested_price_cents")
+  attributes         Json     @default("{}")
+  outerPackage       Json     @map("outer_package")
+  platformSpecific   Json     @default("{}") @map("platform_specific")
+  createdAt          DateTime @default(now()) @map("created_at")
+  updatedAt          DateTime @updatedAt @map("updated_at")
+
+  org      Organization @relation(fields: [orgId], references: [id])
+  products Product[]
+  bulkJobs BulkJob[]
+
+  @@index([orgId])
+  @@map("product_template")
+}
+
+model Product {
+  id                  String   @id @default(uuid())
+  orgId               String   @map("org_id")
+  shopId              String   @map("shop_id")
+  templateId          String?  @map("template_id")
+  platform            String   @default("temu")
+  platformProductId   String   @map("platform_product_id")
+  title               String
+  status              String   @default("active")
+  commonAttrs         Json     @default("{}") @map("common_attrs")
+  platformSpecific    Json     @default("{}") @map("platform_specific")
+  lastSyncedAt        DateTime @default(now()) @map("last_synced_at")
+  createdAt           DateTime @default(now()) @map("created_at")
+  updatedAt           DateTime @updatedAt @map("updated_at")
+
+  org      Organization     @relation(fields: [orgId], references: [id])
+  shop     Shop             @relation(fields: [shopId], references: [id])
+  template ProductTemplate? @relation(fields: [templateId], references: [id])
+  skus     Sku[]
+
+  @@unique([shopId, platformProductId])
+  @@index([orgId, platform])
+  @@map("product")
+}
+
+model Sku {
+  id              String  @id @default(uuid())
+  productId       String  @map("product_id")
+  platformSkuId   String  @map("platform_sku_id")
+  platformSkcId   String? @map("platform_skc_id")
+  barcode         String?
+  priceCents      BigInt  @map("price_cents")
+  stockHint       Int     @default(0) @map("stock_hint")
+  spec            Json    @default("{}")
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, platformSkuId])
+  @@map("sku")
+}
+
+model BulkJob {
+  id          String    @id @default(uuid())
+  orgId       String    @map("org_id")
+  type        String
+  templateId  String?   @map("template_id")
+  total       Int       @default(0)
+  succeeded   Int       @default(0)
+  failed      Int       @default(0)
+  status      String    @default("pending")
+  startedAt   DateTime? @map("started_at")
+  completedAt DateTime? @map("completed_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  org      Organization     @relation(fields: [orgId], references: [id])
+  template ProductTemplate? @relation(fields: [templateId], references: [id])
+  items    BulkJobItem[]
+
+  @@index([orgId, createdAt])
+  @@map("bulk_job")
+}
+
+model BulkJobItem {
+  id              String   @id @default(uuid())
+  jobId           String   @map("job_id")
+  shopId          String   @map("shop_id")
+  status          String   @default("pending")
+  idempotencyKey  String   @unique @map("idempotency_key")
+  resultProductId String?  @map("result_product_id")
+  error           Json?
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  job  BulkJob @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  shop Shop    @relation(fields: [shopId], references: [id])
+
+  @@index([jobId, status])
+  @@map("bulk_job_item")
 }
