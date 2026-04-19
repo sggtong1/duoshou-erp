@@ -24,11 +24,13 @@ model Organization {
   status    String   @default("active")
   createdAt DateTime @default(now()) @map("created_at")
 
-  members          Member[]
-  shops            Shop[]
-  productTemplates ProductTemplate[]
-  products         Product[]
-  bulkJobs         BulkJob[]
+  members               Member[]
+  shops                 Shop[]
+  productTemplates      ProductTemplate[]
+  products              Product[]
+  bulkJobs              BulkJob[]
+  priceReviews          PriceReview[]
+  priceAdjustmentOrders PriceAdjustmentOrder[]
 
   @@map("organization")
 }
@@ -77,8 +79,11 @@ model Shop {
   org   Organization    @relation(fields: [orgId], references: [id])
   creds ShopCredentials @relation(fields: [credsVaultRef], references: [id])
 
-  products     Product[]
-  bulkJobItems BulkJobItem[]
+  products              Product[]
+  bulkJobItems          BulkJobItem[]
+  priceReviews          PriceReview[]
+  priceAdjustmentOrders PriceAdjustmentOrder[]
+  priceHistories        SkuPriceHistory[]
 
   @@unique([orgId, platform, platformShopId])
   @@index([orgId, platform])
@@ -188,4 +193,71 @@ model BulkJobItem {
 
   @@index([jobId, status])
   @@map("bulk_job_item")
+}
+
+model PriceReview {
+  id                   String   @id @default(uuid())
+  orgId                String   @map("org_id")
+  shopId               String   @map("shop_id")
+  platformOrderId      String   @map("platform_order_id")
+  platformProductId    String?  @map("platform_product_id")
+  platformSkuId        String?  @map("platform_sku_id")
+  skuTitle             String?  @map("sku_title")
+  currentPriceCents    BigInt?  @map("current_price_cents")
+  suggestedPriceCents  BigInt?  @map("suggested_price_cents")
+  currency             String?
+  reason               String?
+  status               String   @default("pending")
+  deadlineAt           DateTime? @map("deadline_at")
+  receivedAt           DateTime @default(now()) @map("received_at")
+  resolvedAt           DateTime? @map("resolved_at")
+  platformPayload      Json     @default("{}") @map("platform_payload")
+
+  org  Organization @relation(fields: [orgId], references: [id])
+  shop Shop         @relation(fields: [shopId], references: [id])
+
+  @@unique([shopId, platformOrderId])
+  @@index([orgId, status])
+  @@index([shopId, status])
+  @@map("price_review")
+}
+
+model PriceAdjustmentOrder {
+  id                 String   @id @default(uuid())
+  orgId              String   @map("org_id")
+  shopId             String   @map("shop_id")
+  platformOrderId    String?  @map("platform_order_id")
+  platformSkuId      String   @map("platform_sku_id")
+  skuTitle           String?  @map("sku_title")
+  oldPriceCents      BigInt?  @map("old_price_cents")
+  newPriceCents      BigInt   @map("new_price_cents")
+  currency           String?
+  status             String   @default("submitted")
+  submittedAt        DateTime @default(now()) @map("submitted_at")
+  resolvedAt         DateTime? @map("resolved_at")
+  error              Json?
+  platformPayload    Json?    @map("platform_payload")
+
+  org  Organization @relation(fields: [orgId], references: [id])
+  shop Shop         @relation(fields: [shopId], references: [id])
+
+  @@index([orgId, status])
+  @@index([shopId, platformSkuId])
+  @@map("price_adjustment_order")
+}
+
+model SkuPriceHistory {
+  id              BigInt   @id @default(autoincrement())
+  shopId          String   @map("shop_id")
+  platformSkuId   String   @map("platform_sku_id")
+  priceCents      BigInt   @map("price_cents")
+  currency        String
+  effectiveAt     DateTime @map("effective_at")
+  source          String
+  platformPayload Json?    @map("platform_payload")
+
+  shop Shop @relation(fields: [shopId], references: [id])
+
+  @@index([shopId, platformSkuId, effectiveAt])
+  @@map("sku_price_history")
 }
