@@ -31,6 +31,8 @@ model Organization {
   bulkJobs              BulkJob[]
   priceReviews          PriceReview[]
   priceAdjustmentOrders PriceAdjustmentOrder[]
+  activities            Activity[]
+  activityEnrollments   ActivityEnrollment[]
 
   @@map("organization")
 }
@@ -84,6 +86,7 @@ model Shop {
   priceReviews          PriceReview[]
   priceAdjustmentOrders PriceAdjustmentOrder[]
   priceHistories        SkuPriceHistory[]
+  activityEnrollments   ActivityEnrollment[]
 
   @@unique([orgId, platform, platformShopId])
   @@index([orgId, platform])
@@ -260,4 +263,77 @@ model SkuPriceHistory {
 
   @@index([shopId, platformSkuId, effectiveAt])
   @@map("sku_price_history")
+}
+
+model Activity {
+  id                  String    @id @default(uuid())
+  orgId               String    @map("org_id")
+  platformActivityId  String    @map("platform_activity_id")
+  region              String
+  title               String?
+  activityType        String?   @map("activity_type")
+  startAt             DateTime? @map("start_at")
+  endAt               DateTime? @map("end_at")
+  enrollStartAt       DateTime? @map("enroll_start_at")
+  enrollEndAt         DateTime? @map("enroll_end_at")
+  status              String    @default("open")
+  shopVisibility      Json      @default("[]") @map("shop_visibility")
+  platformPayload     Json      @default("{}") @map("platform_payload")
+  firstSeenAt         DateTime  @default(now()) @map("first_seen_at")
+  lastSyncedAt        DateTime  @default(now()) @updatedAt @map("last_synced_at")
+
+  org         Organization         @relation(fields: [orgId], references: [id])
+  sessions    ActivitySession[]
+  enrollments ActivityEnrollment[]
+
+  @@unique([orgId, region, platformActivityId])
+  @@index([orgId, status, startAt])
+  @@map("activity")
+}
+
+model ActivitySession {
+  id                 String    @id @default(uuid())
+  activityId         String    @map("activity_id")
+  platformSessionId  String    @map("platform_session_id")
+  title              String?
+  startAt            DateTime? @map("start_at")
+  endAt              DateTime? @map("end_at")
+  status             String    @default("open")
+  platformPayload    Json      @default("{}") @map("platform_payload")
+
+  activity    Activity             @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  enrollments ActivityEnrollment[]
+
+  @@unique([activityId, platformSessionId])
+  @@index([activityId, startAt])
+  @@map("activity_session")
+}
+
+model ActivityEnrollment {
+  id                  String    @id @default(uuid())
+  orgId               String    @map("org_id")
+  shopId              String    @map("shop_id")
+  activityId          String    @map("activity_id")
+  sessionId           String?   @map("session_id")
+  platformSkuId       String    @map("platform_sku_id")
+  skuTitle            String?   @map("sku_title")
+  activityPriceCents  BigInt?   @map("activity_price_cents")
+  currency            String?
+  status              String    @default("pending")
+  rejectReason        String?   @map("reject_reason")
+  submittedAt         DateTime  @default(now()) @map("submitted_at")
+  resolvedAt          DateTime? @map("resolved_at")
+  lastSyncedAt        DateTime  @default(now()) @updatedAt @map("last_synced_at")
+  error               Json?
+  platformPayload     Json?     @map("platform_payload")
+
+  org      Organization     @relation(fields: [orgId], references: [id])
+  shop     Shop             @relation(fields: [shopId], references: [id])
+  activity Activity         @relation(fields: [activityId], references: [id])
+  session  ActivitySession? @relation(fields: [sessionId], references: [id])
+
+  @@unique([shopId, activityId, sessionId, platformSkuId])
+  @@index([orgId, status])
+  @@index([activityId, status])
+  @@map("activity_enrollment")
 }
