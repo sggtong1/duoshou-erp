@@ -26,4 +26,15 @@ export class TemuProxyService {
     const client = await this.clientFactory.forShop(shopId);
     return await client.call('bg.goods.attrs.get', { catId });
   }
+
+  async uploadImage(shopId: string, imageBase64: string, filename?: string): Promise<{ url: string }> {
+    const client = await this.clientFactory.forShop(shopId);
+    const res: any = await client.call('bg.goods.image.upload.global', {
+      imageBase64,
+      fileName: filename,
+    });
+    const url = res?.url ?? res?.imageUrl ?? res?.fullUrl;
+    if (!url) throw new Error(`Temu image upload returned no url: ${JSON.stringify(res)}`);
+    return { url };
+  }
 }

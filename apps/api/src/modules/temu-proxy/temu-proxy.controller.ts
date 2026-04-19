@@ -1,4 +1,5 @@
-import { Controller, Get, Query, Req, UseGuards, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Post, Query, Body, Req, UseGuards, UseInterceptors, UploadedFile, BadRequestException } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthGuard } from '../auth/auth.guard';
 import { TenantService } from '../tenant/tenant.service';
 import { PrismaService } from '../../infra/prisma.service';
@@ -41,5 +42,19 @@ export class TemuProxyController {
     if (!shopId || !catId) throw new BadRequestException('shopId and catId required');
     await this.assertShopBelongsToUser(req, shopId);
     return this.proxy.getCategoryAttrs(shopId, Number(catId));
+  }
+
+  @Post('images/upload')
+  @UseInterceptors(FileInterceptor('file', { limits: { fileSize: 10 * 1024 * 1024 } }))
+  async uploadImage(
+    @Req() req: any,
+    @UploadedFile() file: any,
+    @Body('shopId') shopId: string,
+  ) {
+    if (!shopId) throw new BadRequestException('shopId is required');
+    if (!file) throw new BadRequestException('file is required');
+    await this.assertShopBelongsToUser(req, shopId);
+    const b64 = file.buffer.toString('base64');
+    return this.proxy.uploadImage(shopId, b64, file.originalname);
   }
 }
