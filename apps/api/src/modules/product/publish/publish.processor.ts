@@ -43,6 +43,7 @@ export class PublishProcessor implements OnModuleInit, OnModuleDestroy {
       priceCentsOverride,
       semiSiteIds,
       freightTemplateId,
+      categoryIdChain,
     } = job.data;
 
     await (this.prisma as any).bulkJobItem.update({
@@ -67,7 +68,10 @@ export class PublishProcessor implements OnModuleInit, OnModuleDestroy {
           siteIds: semiSiteIds ?? undefined,
           freightTemplateId: freightTemplateId ?? undefined,
         },
-        { priceCentsOverride: priceCentsOverride ?? null },
+        {
+          priceCentsOverride: priceCentsOverride ?? null,
+          categoryIdChain: categoryIdChain ?? [],
+        },
       );
 
       const client = await this.clientFactory.forShop(shopId);

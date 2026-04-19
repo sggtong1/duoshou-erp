@@ -50,7 +50,10 @@ export async function callTemuApi<Req extends object, Res>(
     };
     body.sign = sign(body, ctx.appSecret);
 
-    const gatewayRegion = (ctx.region === 'pa' ? 'pa' : 'cn') as 'cn' | 'pa';
+    // Route to the gateway that owns the method (spec.region), not the shop's home region.
+    // A PA shop can still call CN-only utility endpoints (e.g. bg.goods.cats.get,
+    // bg.mall.info.get) via the CN gateway using the same credentials.
+    const gatewayRegion = ((spec.region === 'pa' || spec.region === 'cn') ? spec.region : 'cn') as 'cn' | 'pa';
     const url = GATEWAY_URLS[gatewayRegion] + spec.requestUrl;
     const resp = await fetch(url, {
       method: 'POST',

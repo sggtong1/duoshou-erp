@@ -3,6 +3,7 @@ import crypto from 'node:crypto';
 import type { Queue } from 'bullmq';
 import { PrismaService } from '../../../infra/prisma.service';
 import { PUBLISH_QUEUE_TOKEN } from '../../../infra/queue.module';
+import { TemuClientFactoryService } from '../../platform/temu/temu-client-factory.service';
 
 export interface DispatchOptions {
   priceCentsOverrides?: Record<string, number>;
@@ -15,6 +16,7 @@ export class PublishDispatcherService {
   constructor(
     private prisma: PrismaService,
     @Inject(PUBLISH_QUEUE_TOKEN) private queue: Queue,
+    private clientFactory: TemuClientFactoryService,
   ) {}
 
   async dispatch(
@@ -36,6 +38,13 @@ export class PublishDispatcherService {
     if (matching.length === 0) {
       throw new Error('No shops match the template shop-type target');
     }
+
+    // Resolve category chain once using the first matching shop
+    const categoryIdChain = await this.resolveCategoryChain(
+      matching[0].id,
+      template.temuCategoryPath ?? [],
+      template.temuCategoryId,
+    );
 
     return this.prisma.$transaction(async (tx: any) => {
       const job = await tx.bulkJob.create({
@@ -73,6 +82,7 @@ export class PublishDispatcherService {
             priceCentsOverride: opts.priceCentsOverrides?.[it.shopId] ?? null,
             semiSiteIds: opts.semiSitesByShop?.[it.shopId] ?? null,
             freightTemplateId: opts.freightTemplatesByShop?.[it.shopId] ?? null,
+            categoryIdChain,
           },
           opts: { jobId: it.idempotencyKey },
         })),
@@ -80,5 +90,50 @@ export class PublishDispatcherService {
 
       return job;
     });
+  }
+
+  /**
+   * Resolve a full numeric category id chain by traversing the Temu category tree
+   * level-by-level using the path names stored on the template.
+   *
+   * For PA shops, Temu requires cat1Id..cat10Id (the full breadcrumb chain).
+   * The template only stores `temuCategoryPath` (array of names) and `temuCategoryId`
+   * (leaf id), so we traverse the tree to collect each level's numeric id.
+   */
+  private async resolveCategoryChain(
+    shopId: string,
+    pathNames: string[],
+    leafCatId: bigint | number,
+  ): Promise<number[]> {
+    if (!pathNames?.length) {
+      // Fallback: just use leaf id as single-element chain
+      return [Number(leafCatId)];
+    }
+
+    const client = await this.clientFactory.forShop(shopId);
+    const chain: number[] = [];
+    let currentParent = 0;
+
+    for (const name of pathNames) {
+      const res: any = await client.call('bg.goods.cats.get', { parentCatId: currentParent });
+      const list: any[] = res?.categoryDTOList ?? res?.goodsCatsList ?? res?.list ?? [];
+      const found = list.find(
+        (c: any) => (c.catName ?? c.catEnName ?? '') === name,
+      );
+      if (!found) {
+        throw new Error(`Category step '${name}' not found under parent ${currentParent}`);
+      }
+      chain.push(Number(found.catId));
+      currentParent = Number(found.catId);
+    }
+
+    // Verify the last id matches the leaf stored on the template
+    if (chain.length > 0 && chain[chain.length - 1] !== Number(leafCatId)) {
+      throw new Error(
+        `Category chain last id ${chain[chain.length - 1]} != leaf ${leafCatId}`,
+      );
+    }
+
+    return chain;
   }
 }

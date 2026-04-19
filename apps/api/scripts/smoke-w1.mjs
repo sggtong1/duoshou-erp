@@ -47,7 +47,7 @@ const connectResp = await authFetch('/shops', {
     accessToken: process.env.TEMU_FULL_TEST_1_ACCESS_TOKEN,
     platformShopId: process.env.TEMU_FULL_TEST_1_SHOP_ID,
     shopType: 'full',
-    region: 'cn',
+    region: 'pa',
     displayName: 'smoke-w1',
   }),
 });
