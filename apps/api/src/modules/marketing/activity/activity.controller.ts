@@ -1,8 +1,9 @@
-import { Controller, Get, Param, Query, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '../../auth/auth.guard';
 import { TenantService } from '../../tenant/tenant.service';
 import { ActivityService } from './activity.service';
 import { ActivityProductsService } from './activity-products.service';
+import { ActivitySyncService } from './activity-sync.service';
 
 @Controller('activities')
 @UseGuards(AuthGuard)
@@ -11,7 +12,15 @@ export class ActivityController {
     private svc: ActivityService,
     private products: ActivityProductsService,
     private tenant: TenantService,
+    private sync: ActivitySyncService,
   ) {}
+
+  @Post('sync/now')
+  async syncNow(@Req() req: any) {
+    const m = await this.tenant.resolveForUser(req.user);
+    const total = await this.sync.syncAllActiveShops(m.orgId);
+    return { total };
+  }
 
   @Get()
   async list(
