@@ -9,6 +9,7 @@ import { TenantModule } from './modules/tenant/tenant.module';
 import { PlatformModule } from './modules/platform/platform.module';
 import { TemuProxyModule } from './modules/temu-proxy/temu-proxy.module';
 import { ProductModule } from './modules/product/product.module';
+import { PricingModule } from './modules/pricing/pricing.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { ProductModule } from './modules/product/product.module';
     AuthModule,
     TemuProxyModule,
     ProductModule,
+    PricingModule,
   ],
 })
 export class AppModule {}
