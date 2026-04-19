@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Query, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, HttpCode, Logger, Param, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '../../auth/auth.guard';
 import { TenantService } from '../../tenant/tenant.service';
 import { ActivityService } from './activity.service';
@@ -8,6 +8,8 @@ import { ActivitySyncService } from './activity-sync.service';
 @Controller('activities')
 @UseGuards(AuthGuard)
 export class ActivityController {
+  private logger = new Logger(ActivityController.name);
+
   constructor(
     private svc: ActivityService,
     private products: ActivityProductsService,
@@ -16,10 +18,15 @@ export class ActivityController {
   ) {}
 
   @Post('sync/now')
+  @HttpCode(202)
   async syncNow(@Req() req: any) {
     const m = await this.tenant.resolveForUser(req.user);
-    const total = await this.sync.syncAllActiveShops(m.orgId);
-    return { total };
+    // fire-and-forget:同步可能跑数分钟,不要阻塞 HTTP;后端后台执行,
+    // 用户稍后通过「手动刷新」读到新数据。错误在后台捕获并记录。
+    void this.sync.syncAllActiveShops(m.orgId).catch((e: any) => {
+      this.logger.error(`org ${m.orgId} activity sync failed in background: ${e.message}`);
+    });
+    return { accepted: true, startedAt: new Date().toISOString() };
   }
 
   @Get()

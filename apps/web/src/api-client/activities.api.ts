@@ -56,5 +56,5 @@ export const activitiesApi = {
       '/activities/' + id + '/products',
       { query: { shopId } },
     ),
-  syncNow: () => http<{ total: number }>('/activities/sync/now', { method: 'POST' }),
+  syncNow: () => http<{ accepted: boolean; startedAt: string }>('/activities/sync/now', { method: 'POST' }),
 };

@@ -64,9 +64,8 @@ async function load(p = page.value) {
 async function syncNow() {
   syncing.value = true;
   try {
-    const r = await enrollmentsApi.syncNow();
-    msg.success(`已同步 ${r.total} 条报名`);
-    load();
+    await enrollmentsApi.syncNow();
+    msg.success('已触发后台同步,请稍后刷新查看最新结果');
   } catch (e: any) { msg.error(e.message); }
   finally { syncing.value = false; }
 }

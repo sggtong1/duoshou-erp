@@ -58,11 +58,11 @@ console.log('  status:', listResp.status);
 const list = await listResp.json();
 console.log('  items:', list.items?.length ?? 0, 'total:', list.total);
 
-console.log('\n[3/6] POST /activities/sync/now');
+console.log('\n[3/6] POST /activities/sync/now (fire-and-forget,期望 202)');
 const syncResp = await fetchA('/activities/sync/now', { method: 'POST' });
 console.log('  status:', syncResp.status);
 const syncRes = await syncResp.json();
-console.log('  synced:', syncRes.total);
+console.log('  accepted:', syncRes.accepted, 'startedAt:', syncRes.startedAt);
 
 console.log('\n[4/6] GET /enrollments');
 const enrListResp = await fetchA('/enrollments');

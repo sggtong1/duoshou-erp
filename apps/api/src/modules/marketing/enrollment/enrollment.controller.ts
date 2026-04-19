@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Query, Req, UseGuards, UsePipes } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Logger, Param, Post, Query, Req, UseGuards, UsePipes } from '@nestjs/common';
 import { AuthGuard } from '../../auth/auth.guard';
 import { TenantService } from '../../tenant/tenant.service';
 import { ZodValidationPipe } from '../../../infra/zod-pipe';
@@ -9,6 +9,8 @@ import { SubmitEnrollmentDto, type SubmitEnrollmentInput } from './enrollment.dt
 @Controller('enrollments')
 @UseGuards(AuthGuard)
 export class EnrollmentController {
+  private logger = new Logger(EnrollmentController.name);
+
   constructor(
     private svc: EnrollmentService,
     private tenant: TenantService,
@@ -46,9 +48,14 @@ export class EnrollmentController {
   }
 
   @Post('sync/now')
+  @HttpCode(202)
   async syncNow(@Req() req: any) {
     const m = await this.tenant.resolveForUser(req.user);
-    const total = await this.syncSvc.syncAllActiveShops(m.orgId);
-    return { total };
+    // fire-and-forget:同步可能跑数分钟,不要阻塞 HTTP;后端后台执行,
+    // 用户稍后通过「手动刷新」读到新数据。错误在后台捕获并记录。
+    void this.syncSvc.syncAllActiveShops(m.orgId).catch((e: any) => {
+      this.logger.error(`org ${m.orgId} enrollment sync failed in background: ${e.message}`);
+    });
+    return { accepted: true, startedAt: new Date().toISOString() };
   }
 }

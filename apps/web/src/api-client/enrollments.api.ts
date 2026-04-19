@@ -37,5 +37,5 @@ export const enrollmentsApi = {
   submit: (body: { activityId: string; sessionId?: string; items: EnrollmentItem[] }) =>
     http<SubmitResult>('/enrollments/submit', { method: 'POST', body: JSON.stringify(body) }),
   refresh: (id: string) => http<Enrollment>('/enrollments/' + id + '/refresh', { method: 'POST' }),
-  syncNow: () => http<{ total: number }>('/enrollments/sync/now', { method: 'POST' }),
+  syncNow: () => http<{ accepted: boolean; startedAt: string }>('/enrollments/sync/now', { method: 'POST' }),
 };

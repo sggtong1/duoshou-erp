@@ -77,9 +77,8 @@ async function load(p = page.value) {
 async function syncNow() {
   syncing.value = true;
   try {
-    const r = await activitiesApi.syncNow();
-    msg.success(`已同步 ${r.total} 个活动`);
-    load();
+    await activitiesApi.syncNow();
+    msg.success('已触发后台同步,请稍后点「手动刷新」查看最新结果');
   } catch (e: any) {
     msg.error(e.message);
   } finally { syncing.value = false; }
