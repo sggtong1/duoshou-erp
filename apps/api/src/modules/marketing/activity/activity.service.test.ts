@@ -43,11 +43,11 @@ describe('ActivityService.list', () => {
     expect(a.enrolledSkuCount).toBe(5);
   });
 
-  it('shopId 筛选用 JSON @> 路径', async () => {
+  it('shopId 筛选生成 Prisma @> 的 array_contains', async () => {
     const svc = new ActivityService(prisma, {} as any);
     await svc.list('org-1', { shopId: 's1' });
     const where = prisma.activity.findMany.mock.calls[0][0].where;
-    expect(where.shopVisibility).toBeDefined();
+    expect(where.shopVisibility).toEqual({ array_contains: [{ shopId: 's1' }] });
   });
 });
 

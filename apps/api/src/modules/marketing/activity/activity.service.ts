@@ -45,7 +45,7 @@ export class ActivityService {
     if (filter.region) where.region = filter.region;
     if (filter.status) where.status = filter.status;
     if (filter.search) where.title = { contains: filter.search, mode: 'insensitive' };
-    if (filter.shopId) where.shopVisibility = { path: ['$[*].shopId'], array_contains: filter.shopId };
+    if (filter.shopId) where.shopVisibility = { array_contains: [{ shopId: filter.shopId }] };
     if (filter.startAfter) where.startAt = { gte: new Date(filter.startAfter) };
     if (filter.startBefore) where.startAt = { ...(where.startAt ?? {}), lte: new Date(filter.startBefore) };
 
