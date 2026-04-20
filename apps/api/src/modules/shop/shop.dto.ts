@@ -11,6 +11,16 @@ export const ConnectShopDto = z.object({
 });
 export type ConnectShopInput = z.infer<typeof ConnectShopDto>;
 
+export const TestConnectionDto = z.object({
+  appKey: z.string().min(1),
+  appSecret: z.string().min(1),
+  accessToken: z.string().min(1),
+  platformShopId: z.string().min(1),
+  shopType: z.enum(['full', 'semi']),
+  region: z.enum(['cn', 'pa']),
+});
+export type TestConnectionInput = z.infer<typeof TestConnectionDto>;
+
 export const ShopResponseSchema = z.object({
   id: z.string().uuid(),
   orgId: z.string(),

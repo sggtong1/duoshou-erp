@@ -4,7 +4,7 @@ import { sharedRedis } from '../../infra/redis';
 import { TemuClient, methods, type TemuCallContext } from '@duoshou/temu-sdk';
 import { PrismaService } from '../../infra/prisma.service';
 import { encrypt } from '../../infra/crypto';
-import type { ConnectShopInput } from './shop.dto';
+import type { ConnectShopInput, TestConnectionInput } from './shop.dto';
 
 /** Shim the generated method. If codegen hasn't run, this errors at runtime, not compile time. */
 const bgMallInfoGet: (ctx: TemuCallContext, req: any) => Promise<any> = (methods as any).bgMallInfoGet;
@@ -16,6 +16,29 @@ export class ShopService {
   }
 
   constructor(private prisma: PrismaService) {}
+
+  async testConnection(input: TestConnectionInput): Promise<{ ok: boolean; shopInfo?: any; error?: string }> {
+    const ctx: TemuCallContext = {
+      appKey: input.appKey,
+      appSecret: input.appSecret,
+      accessToken: input.accessToken,
+      region: input.region,
+      shopId: 'pending',
+    };
+    try {
+      const mallInfo = await bgMallInfoGet(ctx, {} as any);
+      const reportedSemi = !!mallInfo?.semiManagedMall;
+      if (reportedSemi && input.shopType !== 'semi') {
+        return { ok: false, error: `店铺类型不匹配:Temu 报告半托管,你选择了 '${input.shopType}'` };
+      }
+      if (!reportedSemi && input.shopType !== 'full') {
+        return { ok: false, error: `店铺类型不匹配:Temu 报告全托管,你选择了 '${input.shopType}'` };
+      }
+      return { ok: true, shopInfo: mallInfo };
+    } catch (e: any) {
+      return { ok: false, error: e.message ?? String(e) };
+    }
+  }
 
   async connect(orgId: string, input: ConnectShopInput) {
     // 1. Validate credentials via bg.mall.info.get (no rate-limiting for first-time connect,

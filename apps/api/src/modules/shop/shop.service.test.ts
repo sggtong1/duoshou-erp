@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ShopService } from './shop.service';
+import * as sdk from '@duoshou/temu-sdk';
 
 vi.mock('@duoshou/temu-sdk', () => ({
   methods: {
@@ -60,5 +61,44 @@ describe('ShopService.connect', () => {
       shopType: 'full',
       region: 'cn',
     })).rejects.toThrow(/Temu credential validation failed/);
+  });
+});
+
+describe('ShopService.testConnection', () => {
+  beforeEach(() => {
+    (sdk.methods as any).bgMallInfoGet.mockReset();
+  });
+
+  it('返回 ok=true 且 shopInfo,凭据 + shopType 一致时', async () => {
+    (sdk.methods as any).bgMallInfoGet.mockResolvedValueOnce({ semiManagedMall: false });
+    const svc = new ShopService({} as any);
+    const r = await svc.testConnection({
+      appKey: 'k', appSecret: 's', accessToken: 't',
+      platformShopId: '1001', shopType: 'full', region: 'pa',
+    });
+    expect(r.ok).toBe(true);
+    expect(r.shopInfo).toBeDefined();
+  });
+
+  it('shopType 与 Temu 报告不一致时返回 ok=false', async () => {
+    (sdk.methods as any).bgMallInfoGet.mockResolvedValueOnce({ semiManagedMall: true });
+    const svc = new ShopService({} as any);
+    const r = await svc.testConnection({
+      appKey: 'k', appSecret: 's', accessToken: 't',
+      platformShopId: '1001', shopType: 'full', region: 'pa',
+    });
+    expect(r.ok).toBe(false);
+    expect(r.error).toMatch(/半托管/);
+  });
+
+  it('Temu 抛错时返回 ok=false 含原 message', async () => {
+    (sdk.methods as any).bgMallInfoGet.mockRejectedValueOnce(new Error('Invalid signature'));
+    const svc = new ShopService({} as any);
+    const r = await svc.testConnection({
+      appKey: 'k', appSecret: 's', accessToken: 't',
+      platformShopId: '1001', shopType: 'full', region: 'pa',
+    });
+    expect(r.ok).toBe(false);
+    expect(r.error).toBe('Invalid signature');
   });
 });
