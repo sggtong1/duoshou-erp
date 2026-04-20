@@ -23,10 +23,23 @@ COPY apps/api ./apps/api
 RUN pnpm --filter @duoshou/temu-sdk exec pnpm codegen || pnpm --filter @duoshou/temu-sdk codegen
 RUN pnpm --filter @duoshou/shared-types build
 RUN pnpm --filter @duoshou/temu-sdk build
+
+# Generate Prisma Client into node_modules (writes PrismaClient class + model delegates
+# that the compiled API code imports at build AND runtime).
+RUN pnpm --filter @duoshou/api exec prisma generate
+
 RUN pnpm --filter @duoshou/api build
 
 # Prune dev dependencies for runtime
 RUN pnpm --filter @duoshou/api --prod deploy /output
+
+# pnpm deploy copies declared deps but may skip the Prisma-generated `.prisma/`
+# directory (it isn't a package). Copy it over explicitly so runtime finds the
+# generated client. Same for @prisma/client's internal node_modules that hold
+# the engine binary.
+RUN cp -r /app/node_modules/.prisma /output/node_modules/.prisma 2>/dev/null \
+    || cp -r /app/apps/api/node_modules/.prisma /output/node_modules/.prisma 2>/dev/null \
+    || echo "No .prisma directory found (checking for @prisma/client only variant)"
 
 # -------- Runtime stage --------
 FROM node:20-alpine AS runtime
