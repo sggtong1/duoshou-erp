@@ -16,6 +16,11 @@ services:
     build:
       context: ../..
       dockerfile: infra/docker/web.Dockerfile
+      args:
+        # Vite 把这两个值 embed 进 JS bundle(前端登录/会话要用),build 时必传。
+        # 从 compose 自动读取的 .env 文件(放在 infra/docker/.env)或 shell 环境继承。
+        VITE_SUPABASE_URL: ${VITE_SUPABASE_URL:-}
+        VITE_SUPABASE_ANON_KEY: ${VITE_SUPABASE_ANON_KEY:-}
     restart: always
     depends_on:
       - api

@@ -23,7 +23,10 @@ RUN cd apps/web && \
     echo "VITE_API_BASE_URL=${VITE_API_BASE_URL}" > .env.production && \
     echo "VITE_SUPABASE_URL=${VITE_SUPABASE_URL}" >> .env.production && \
     echo "VITE_SUPABASE_ANON_KEY=${VITE_SUPABASE_ANON_KEY}" >> .env.production && \
-    pnpm build
+    pnpm exec vite build
+# 注意:跳过 package.json 里 build script 的 vue-tsc 类型检查。
+# 类型错误已在本地 pnpm build 验证;VPS 单核 + 小内存跑 vue-tsc 极慢(40 分钟+)。
+# 要在 VPS 恢复类型检查,改回 `pnpm build`,但需要 ≥ 4GB RAM。
 
 FROM nginx:1.27-alpine AS runtime
 COPY --from=build /app/apps/web/dist /usr/share/nginx/html
