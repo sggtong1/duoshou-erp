@@ -11,6 +11,8 @@ import PriceAdjustmentSubmitPage from '@/pages/price-adjustments/PriceAdjustment
 import ActivityListPage from '@/pages/activities/ActivityListPage.vue';
 import ActivityDetailPage from '@/pages/activities/ActivityDetailPage.vue';
 import EnrollmentListPage from '@/pages/enrollments/EnrollmentListPage.vue';
+import ShopsListPage from '@/pages/shops/ShopsListPage.vue';
+import ShopsConnectPage from '@/pages/shops/ShopsConnectPage.vue';
 import { useAuthStore } from '@/stores/auth';
 
 const routes: RouteRecordRaw[] = [
@@ -27,6 +29,8 @@ const routes: RouteRecordRaw[] = [
   { path: '/activities', component: ActivityListPage, meta: { requiresAuth: true } },
   { path: '/activities/:id', component: ActivityDetailPage, meta: { requiresAuth: true } },
   { path: '/enrollments', component: EnrollmentListPage, meta: { requiresAuth: true } },
+  { path: '/shops', component: ShopsListPage, meta: { requiresAuth: true } },
+  { path: '/shops/new', component: ShopsConnectPage, meta: { requiresAuth: true } },
 ];
 
 const router = createRouter({
@@ -38,6 +42,18 @@ router.beforeEach(async (to) => {
   const auth = useAuthStore();
   try { await auth.init(); } catch { /* env missing, safe to ignore */ }
   if (to.meta.requiresAuth && !auth.isAuthed) return '/login';
+
+  // 强制 onboarding: 已登录但无 active shop 时,把访问受保护页面的请求拦到 /shops/new
+  if (to.meta.requiresAuth && !to.path.startsWith('/shops') && !to.path.startsWith('/login')) {
+    const { useShopsStore } = await import('@/stores/shops');
+    const shops = useShopsStore();
+    if (!shops.items.length) {
+      try { await shops.fetch(); }
+      catch { /* fetch 失败不阻塞;用户看到空 list,不硬 redirect */ return true; }
+    }
+    const hasActive = shops.items.some((s) => s.status === 'active');
+    if (!hasActive) return '/shops/new';
+  }
 });
 
 export default router;

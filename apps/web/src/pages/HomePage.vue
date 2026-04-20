@@ -2,6 +2,7 @@
   <n-card title="舵手 ERP" style="max-width: 600px; margin: 60px auto;">
     <n-h2>快速入口</n-h2>
     <n-space vertical>
+      <n-button @click="$router.push('/shops')">店铺管理</n-button>
       <n-button @click="$router.push('/templates')">货品模板</n-button>
       <n-button @click="$router.push('/products')">我的商品</n-button>
       <n-button @click="$router.push('/price-reviews')">核价单</n-button>
