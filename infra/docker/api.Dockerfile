@@ -30,26 +30,16 @@ RUN pnpm --filter @duoshou/api exec prisma generate
 
 RUN pnpm --filter @duoshou/api build
 
-# Prune dev dependencies for runtime
-RUN pnpm --filter @duoshou/api --prod deploy /output
-
-# pnpm deploy copies declared deps but may skip the Prisma-generated `.prisma/`
-# directory (it isn't a package). Copy it over explicitly so runtime finds the
-# generated client. Same for @prisma/client's internal node_modules that hold
-# the engine binary.
-RUN cp -r /app/node_modules/.prisma /output/node_modules/.prisma 2>/dev/null \
-    || cp -r /app/apps/api/node_modules/.prisma /output/node_modules/.prisma 2>/dev/null \
-    || echo "No .prisma directory found (checking for @prisma/client only variant)"
-
 # -------- Runtime stage --------
+# Inherit the entire build stage /app tree:保留 pnpm workspace 的 hoisted
+# node_modules + apps/api/node_modules + 所有 .prisma 输出路径。不走 pnpm deploy
+# 因为它在 workspace + generated files 场景下会漏 .prisma,在 runtime 里 require
+# '.prisma/client/default' 就挂。镜像会变大(多带 dev deps + 源码),公测够用。
 FROM node:20-alpine AS runtime
 RUN apk add --no-cache libc6-compat
-WORKDIR /app
+WORKDIR /app/apps/api
 
-COPY --from=build /output/node_modules ./node_modules
-COPY --from=build /app/apps/api/dist ./dist
-COPY --from=build /app/apps/api/prisma ./prisma
-COPY --from=build /app/apps/api/package.json ./package.json
+COPY --from=build /app /app
 
 ENV NODE_ENV=production
 ENV PORT=3000
