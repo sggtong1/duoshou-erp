@@ -1,6 +1,9 @@
 services:
   api:
-    image: duoshou/api:${TAG:-latest}
+    image: duoshou/api:latest
+    build:
+      context: ../..
+      dockerfile: infra/docker/api.Dockerfile
     restart: always
     env_file: ../../.env.production
     depends_on:
@@ -9,17 +12,20 @@ services:
       - internal
 
   web:
-    image: duoshou/web:${TAG:-latest}
+    image: duoshou/web:latest
+    build:
+      context: ../..
+      dockerfile: infra/docker/web.Dockerfile
     restart: always
     depends_on:
       - api
-    networks:
-      - internal
     ports:
       - "80:80"
       - "443:443"
     volumes:
       - ./letsencrypt:/etc/letsencrypt:ro
+    networks:
+      - internal
 
   redis:
     image: redis:7-alpine
