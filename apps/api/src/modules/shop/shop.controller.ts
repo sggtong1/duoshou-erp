@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UsePipes, UseGuards, Req } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, UsePipes, UseGuards, Req } from '@nestjs/common';
 import { AuthGuard } from '../auth/auth.guard';
 import { TenantService } from '../tenant/tenant.service';
 import { ShopService } from './shop.service';
@@ -30,5 +30,11 @@ export class ShopController {
   async list(@Req() req: any) {
     const m = await this.tenant.resolveForUser(req.user);
     return this.shopService.list(m.orgId);
+  }
+
+  @Delete(':id')
+  async disconnect(@Req() req: any, @Param('id') id: string) {
+    const m = await this.tenant.resolveForUser(req.user);
+    return this.shopService.disconnect(m.orgId, id);
   }
 }

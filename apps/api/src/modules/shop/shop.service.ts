@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException, Inject } from '@nestjs/common';
+import { Injectable, BadRequestException, Inject, NotFoundException } from '@nestjs/common';
 import type Redis from 'ioredis';
 import { sharedRedis } from '../../infra/redis';
 import { TemuClient, methods, type TemuCallContext } from '@duoshou/temu-sdk';
@@ -140,5 +140,15 @@ export class ShopService {
       where: { orgId },
       orderBy: { connectedAt: 'desc' },
     });
+  }
+
+  async disconnect(orgId: string, id: string) {
+    const shop = await this.prisma.shop.findFirst({ where: { id, orgId } });
+    if (!shop) throw new NotFoundException('Shop not found');
+    await this.prisma.shop.update({
+      where: { id },
+      data: { status: 'disconnected' },
+    });
+    return { ok: true };
   }
 }
