@@ -11,6 +11,7 @@ import { TemuProxyModule } from './modules/temu-proxy/temu-proxy.module';
 import { ProductModule } from './modules/product/product.module';
 import { PricingModule } from './modules/pricing/pricing.module';
 import { MarketingModule } from './modules/marketing/marketing.module';
+import { AnalyticsModule } from './modules/analytics/analytics.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { MarketingModule } from './modules/marketing/marketing.module';
     ProductModule,
     PricingModule,
     MarketingModule,
+    AnalyticsModule,
   ],
 })
 export class AppModule {}
