@@ -13,9 +13,11 @@
   "dependencies": {
     "@duoshou/shared-types": "workspace:*",
     "@supabase/supabase-js": "^2.103.3",
+    "echarts": "^6.0.0",
     "naive-ui": "^2.38",
     "pinia": "^2.1",
     "vue": "^3.4",
+    "vue-echarts": "^8.0.1",
     "vue-router": "^4.3"
   },
   "devDependencies": {
