@@ -33,6 +33,8 @@ model Organization {
   priceAdjustmentOrders PriceAdjustmentOrder[]
   activities            Activity[]
   activityEnrollments   ActivityEnrollment[]
+  shopSkuSnapshots      ShopSkuSnapshot[]
+  settings              OrgSettings?
 
   @@map("organization")
 }
@@ -87,6 +89,7 @@ model Shop {
   priceAdjustmentOrders PriceAdjustmentOrder[]
   priceHistories        SkuPriceHistory[]
   activityEnrollments   ActivityEnrollment[]
+  shopSkuSnapshots      ShopSkuSnapshot[]
 
   @@unique([orgId, platform, platformShopId])
   @@index([orgId, platform])
@@ -336,4 +339,51 @@ model ActivityEnrollment {
   @@index([orgId, status])
   @@index([activityId, status])
   @@map("activity_enrollment")
+}
+
+model ShopSkuSnapshot {
+  id                   String   @id @default(uuid())
+  orgId                String   @map("org_id")
+  shopId               String   @map("shop_id")
+  platformSkuId        String   @map("platform_sku_id")
+  productName          String?  @map("product_name")
+  className            String?  @map("class_name")
+  skuExtCode           String?  @map("sku_ext_code")
+
+  todaySaleVolume      Int      @default(0) @map("today_sale_volume")
+  sales7dVolume        Int      @default(0) @map("sales_7d_volume")
+  sales30dVolume       Int      @default(0) @map("sales_30d_volume")
+  totalSaleVolume      Int      @default(0) @map("total_sale_volume")
+
+  warehouseQty         Int      @default(0) @map("warehouse_qty")
+  waitReceiveQty       Int      @default(0) @map("wait_receive_qty")
+  waitOnShelfQty       Int      @default(0) @map("wait_on_shelf_qty")
+  waitDeliveryQty      Int      @default(0) @map("wait_delivery_qty")
+
+  avgDailySales        Float?   @map("avg_daily_sales")
+  daysRemaining        Float?   @map("days_remaining")
+
+  supplierPriceCents   BigInt?  @map("supplier_price_cents")
+
+  lastSyncedAt         DateTime @default(now()) @updatedAt @map("last_synced_at")
+  platformPayload      Json?    @map("platform_payload")
+
+  org  Organization @relation(fields: [orgId], references: [id])
+  shop Shop         @relation(fields: [shopId], references: [id])
+
+  @@unique([shopId, platformSkuId])
+  @@index([orgId, warehouseQty])
+  @@index([orgId, sales30dVolume])
+  @@index([orgId, todaySaleVolume])
+  @@map("shop_sku_snapshot")
+}
+
+model OrgSettings {
+  orgId                   String   @id @map("org_id")
+  lowStockThreshold       Int      @default(10) @map("low_stock_threshold")
+  lowStockDaysThreshold   Int      @default(7)  @map("low_stock_days_threshold")
+  updatedAt               DateTime @default(now()) @updatedAt @map("updated_at")
+
+  org Organization @relation(fields: [orgId], references: [id])
+  @@map("org_settings")
 }
