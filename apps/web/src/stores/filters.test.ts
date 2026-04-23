@@ -3,7 +3,9 @@ import { setActivePinia, createPinia } from 'pinia';
 import { useFiltersStore } from './filters';
 
 describe('useFiltersStore', () => {
-  beforeEach(() => setActivePinia(createPinia()));
+  beforeEach(() => {
+    setActivePinia(createPinia());
+  });
 
   it('defaults: platform=temu, timeRange=30d, region=null, shopIds=[]', () => {
     const s = useFiltersStore();
