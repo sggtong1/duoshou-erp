@@ -35,10 +35,17 @@ export class DashboardService {
     const timeRange: TimeRange = filter.timeRange ?? '30d';
     const volumeField = VOLUME_FIELD[timeRange];
 
+    // shopIds arrives as CSV string from query (or string[] when called from tests); normalize.
+    const shopIdList: string[] | undefined = Array.isArray(filter.shopIds)
+      ? filter.shopIds
+      : typeof filter.shopIds === 'string'
+        ? (filter.shopIds as string).split(',').map((s) => s.trim()).filter(Boolean)
+        : undefined;
+
     const shopWhere: any = { orgId, status: 'active' };
     if (filter.platform) shopWhere.platform = filter.platform;
     if (filter.region) shopWhere.region = filter.region;
-    if (filter.shopIds && filter.shopIds.length > 0) shopWhere.id = { in: filter.shopIds };
+    if (shopIdList && shopIdList.length > 0) shopWhere.id = { in: shopIdList };
 
     const inScopeShops = await (this.prisma as any).shop.findMany({
       where: shopWhere,
@@ -84,10 +91,10 @@ export class DashboardService {
       (this.prisma as any).priceReview.count({ where: { orgId, status: 'pending' } }),
     ]);
 
-    const shopMap = new Map(inScopeShops.map((s: any) => [s.id, s]));
+    const shopMap = new Map<string, any>(inScopeShops.map((s: any): [string, any] => [s.id, s]));
     const shopRanking = groupByShop
       .map((g: any) => {
-        const s = shopMap.get(g.shopId);
+        const s = shopMap.get(g.shopId) as any;
         return s ? {
           shopId: g.shopId,
           shopName: s.displayName ?? s.platformShopId,
@@ -169,7 +176,7 @@ export class DashboardService {
       appliedFilter: {
         platform: filter.platform ?? null,
         region: filter.region ?? null,
-        shopIds: filter.shopIds ?? null,
+        shopIds: shopIdList && shopIdList.length > 0 ? shopIdList : null,
         timeRange,
       },
     };
