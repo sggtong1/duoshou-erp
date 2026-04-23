@@ -1,27 +1,70 @@
 <template>
-  <n-card title="实时动态" :bordered="false">
-    <div class="placeholder-block">
-      <n-icon :size="36" :depth="4" style="margin-bottom: 10px;">
-        <svg viewBox="0 0 24 24" fill="currentColor">
-          <circle cx="12" cy="12" r="3" />
-          <path d="M12 1v6m0 10v6M4.22 4.22l4.24 4.24m7.08 7.08l4.24 4.24M1 12h6m10 0h6M4.22 19.78l4.24-4.24m7.08-7.08l4.24-4.24" stroke-width="2" fill="none" stroke="currentColor"/>
-        </svg>
-      </n-icon>
-      <div class="placeholder-title">实时订单流</div>
-      <div class="placeholder-desc">v1.2 接入订单 webhook 后,此处将推送下单/发货/签收事件</div>
+  <n-card :bordered="false">
+    <template #header>
+      <div class="header">
+        实时动态
+        <span class="demo-tag">演示数据</span>
+      </div>
+    </template>
+    <template #header-extra>
+      <n-button text size="small" style="color: #2080f0;">查看全部</n-button>
+    </template>
+    <div v-for="(a, i) in items" :key="i" class="activity-row">
+      <div class="icon-cell" :style="{ backgroundColor: platformColor(a.platform) }">
+        {{ a.platform.charAt(0) }}
+      </div>
+      <div class="body">
+        <div class="title">{{ a.platform }} {{ a.event }}</div>
+        <div class="sub">{{ a.shopName }} · {{ a.skuTitle }}</div>
+        <div class="time">{{ a.minutesAgo }}分钟前</div>
+      </div>
+      <div class="amount">{{ a.amount }}</div>
     </div>
   </n-card>
 </template>
 
 <script setup lang="ts">
-import { NCard, NIcon } from 'naive-ui';
+import { NCard, NButton } from 'naive-ui';
+import { DEMO_LIVE_ACTIVITY } from '@/lib/demo-data';
+
+const items = DEMO_LIVE_ACTIVITY;
+
+function platformColor(p: string): string {
+  if (p.includes('TikTok')) return '#000';
+  if (p.includes('Amazon')) return '#ff9900';
+  if (p.includes('Shopee')) return '#ee4d2d';
+  if (p.includes('MercadoLibre')) return '#ffe600';
+  if (p.includes('Temu')) return '#f97316';
+  return '#666';
+}
 </script>
 
 <style scoped>
-.placeholder-block {
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  padding: 24px 0; color: #bbb; text-align: center;
+.header { display: flex; align-items: center; gap: 8px; font-weight: 500; }
+.demo-tag {
+  padding: 1px 6px;
+  font-size: 10px;
+  border-radius: 3px;
+  background: #e8f0ff;
+  color: #6686bf;
+  font-weight: normal;
 }
-.placeholder-title { font-size: 13px; margin-bottom: 4px; }
-.placeholder-desc { font-size: 12px; max-width: 220px; line-height: 1.5; }
+.activity-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid #f5f5f5;
+}
+.activity-row:last-child { border-bottom: none; }
+.icon-cell {
+  flex-shrink: 0;
+  width: 28px; height: 28px;
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 12px; font-weight: 600;
+}
+.body { flex: 1; min-width: 0; }
+.title { font-size: 12px; color: #333; font-weight: 500; }
+.sub { font-size: 11px; color: #888; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.time { font-size: 10px; color: #bbb; margin-top: 2px; }
+.amount { font-size: 13px; color: #2c3e50; font-weight: 600; }
 </style>

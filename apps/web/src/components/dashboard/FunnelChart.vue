@@ -1,27 +1,51 @@
 <template>
-  <n-card title="订单转化漏斗" :bordered="false" style="height: 320px;">
-    <div class="placeholder-block">
-      <n-icon :size="42" :depth="4" style="margin-bottom: 12px;">
-        <svg viewBox="0 0 24 24" fill="currentColor">
-          <path d="M4 4 L20 4 L14 12 L14 20 L10 20 L10 12 Z" />
-        </svg>
-      </n-icon>
-      <div class="placeholder-title">曝光 → 点击 → 下单 → 支付</div>
-      <div class="placeholder-desc">v1.2 接入订单 API + v1.3 广告 API 后,此处将显示全链路转化率</div>
-    </div>
+  <n-card title="流量转化漏斗" :bordered="false" style="height: 320px;">
+    <template #header-extra>
+      <span class="demo-tag">演示数据</span>
+    </template>
+    <v-chart :option="option" style="height: 240px;" autoresize />
   </n-card>
 </template>
 
 <script setup lang="ts">
-import { NCard, NIcon } from 'naive-ui';
+import { NCard } from 'naive-ui';
+import VChart from 'vue-echarts';
+import { use } from 'echarts/core';
+import { CanvasRenderer } from 'echarts/renderers';
+import { FunnelChart as EFunnel } from 'echarts/charts';
+import { TooltipComponent, LegendComponent } from 'echarts/components';
+import { DEMO_FUNNEL } from '@/lib/demo-data';
+
+use([CanvasRenderer, EFunnel, TooltipComponent, LegendComponent]);
+
+const option = {
+  tooltip: { trigger: 'item', formatter: '{b}: {c}' },
+  series: [{
+    type: 'funnel',
+    left: '10%',
+    right: '10%',
+    top: 16,
+    bottom: 16,
+    width: '80%',
+    min: 0,
+    max: DEMO_FUNNEL[0].value,
+    gap: 2,
+    label: { show: true, position: 'inside', fontSize: 11, color: '#fff', formatter: '{b}: {c}' },
+    itemStyle: { borderColor: '#fff', borderWidth: 1 },
+    data: DEMO_FUNNEL.map((d, i) => ({
+      ...d,
+      itemStyle: { color: ['#f97316', '#fb923c', '#fbbf24', '#38bdf8', '#0ea5e9'][i] },
+    })),
+  }],
+};
 </script>
 
 <style scoped>
-.placeholder-block {
-  height: 240px;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  color: #bbb; text-align: center;
+.demo-tag {
+  padding: 1px 6px;
+  font-size: 10px;
+  border-radius: 3px;
+  background: #e8f0ff;
+  color: #6686bf;
 }
-.placeholder-title { font-size: 14px; margin-bottom: 6px; }
-.placeholder-desc { font-size: 12px; max-width: 260px; line-height: 1.5; }
 </style>

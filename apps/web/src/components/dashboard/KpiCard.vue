@@ -2,14 +2,19 @@
   <n-tooltip v-if="placeholder && placeholderReason" placement="top">
     <template #trigger>
       <n-card size="small" :bordered="true" :class="{ 'kpi-card': true, placeholder }">
-        <div class="kpi-label">{{ label }}</div>
+        <div class="kpi-head">
+          <div class="kpi-label">{{ label }}</div>
+          <span v-if="placeholder" class="demo-tag">演示</span>
+        </div>
         <div class="kpi-value" :class="{ placeholder }">
           {{ displayValue }}
         </div>
         <div class="kpi-sub">
-          <span v-if="unit && !placeholder" class="kpi-unit">{{ unit }}</span>
-          <span v-else-if="placeholder" class="kpi-unit placeholder-label">待接入</span>
-          <svg class="sparkline" :class="{ placeholder }" width="64" height="18" viewBox="0 0 64 18">
+          <span v-if="changePct != null" class="change" :class="{ up: changePct >= 0, down: changePct < 0 }">
+            {{ changePct >= 0 ? '▲' : '▼' }} {{ Math.abs(changePct).toFixed(2) }}{{ unit === '%' ? 'pp' : '%' }}
+          </span>
+          <span v-else-if="unit && !placeholder" class="kpi-unit">{{ unit }}</span>
+          <svg class="sparkline" :class="{ placeholder }" width="72" height="20" viewBox="0 0 72 20">
             <polyline :points="sparkPoints" fill="none" :stroke="sparkColor" stroke-width="1.5" />
           </svg>
         </div>
@@ -18,11 +23,16 @@
     {{ placeholderReason }}
   </n-tooltip>
   <n-card v-else size="small" :bordered="true" class="kpi-card">
-    <div class="kpi-label">{{ label }}</div>
+    <div class="kpi-head">
+      <div class="kpi-label">{{ label }}</div>
+    </div>
     <div class="kpi-value">{{ displayValue }}</div>
     <div class="kpi-sub">
-      <span v-if="unit" class="kpi-unit">{{ unit }}</span>
-      <svg class="sparkline" width="64" height="18" viewBox="0 0 64 18">
+      <span v-if="changePct != null" class="change" :class="{ up: changePct >= 0, down: changePct < 0 }">
+        {{ changePct >= 0 ? '▲' : '▼' }} {{ Math.abs(changePct).toFixed(2) }}{{ unit === '%' ? 'pp' : '%' }}
+      </span>
+      <span v-else-if="unit" class="kpi-unit">{{ unit }}</span>
+      <svg class="sparkline" width="72" height="20" viewBox="0 0 72 20">
         <polyline :points="sparkPoints" fill="none" :stroke="sparkColor" stroke-width="1.5" />
       </svg>
     </div>
@@ -36,36 +46,63 @@ import { NCard, NTooltip } from 'naive-ui';
 const props = defineProps<{
   label: string;
   value: number | null | undefined;
-  unit?: string;
+  unit?: string;                 // '件' | '¥' | '$' | '%' — acts as prefix for ¥/$, suffix for 件/%
   placeholder?: boolean;
   placeholderReason?: string;
   sparkShape?: 0 | 1 | 2;
+  changePct?: number | null;
 }>();
 
+function formatNumber(v: number): string {
+  if (Math.abs(v) >= 1000) return new Intl.NumberFormat('en-US').format(Math.round(v));
+  return v.toFixed(2);
+}
+
 const displayValue = computed(() => {
-  if (props.placeholder || props.value == null) return '—';
-  return new Intl.NumberFormat().format(props.value);
+  if (props.value == null) return '—';
+  const u = props.unit;
+  const n = formatNumber(props.value);
+  if (u === '$' || u === '¥') return `${u}${n}`;
+  if (u === '%') return `${props.value.toFixed(2)}%`;
+  if (u === '件' || u === '单') return `${n}`;
+  return n;
 });
 
 const SHAPES: Record<number, string> = {
-  0: '0,14 8,10 16,12 24,6 32,8 40,4 48,6 56,2 64,4',
-  1: '0,10 10,12 20,8 30,10 40,6 50,8 60,4 64,4',
-  2: '0,8 8,12 16,6 24,10 32,4 40,8 48,2 56,6 64,4',
+  0: '0,14 8,10 16,12 24,6 32,8 40,4 48,6 56,2 64,4 72,6',
+  1: '0,10 10,12 20,8 30,10 40,6 50,8 60,4 66,4 72,3',
+  2: '0,8 8,12 16,6 24,10 32,4 40,8 48,2 56,6 64,4 72,5',
 };
 
 const sparkPoints = computed(() => SHAPES[props.sparkShape ?? 0]);
-const sparkColor = computed(() => (props.placeholder ? '#ddd' : '#18a058'));
+const sparkColor = computed(() => (props.placeholder ? '#a0b5e0' : '#18a058'));
 </script>
 
 <style scoped>
-.kpi-card { background: #fff; min-height: 104px; }
-.kpi-card.placeholder { background: #fafafa; }
-.kpi-label { color: #888; font-size: 12px; margin-bottom: 6px; }
-.kpi-value { font-size: 26px; font-weight: 600; color: #18a058; line-height: 1.2; }
-.kpi-value.placeholder { color: #ccc; }
-.kpi-sub { margin-top: 6px; display: flex; justify-content: space-between; align-items: center; }
+.kpi-card { background: #fff; min-height: 110px; }
+.kpi-card.placeholder {
+  background: #fafbff;
+  border-style: dashed;
+  border-color: #d0dfff;
+}
+.kpi-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+.kpi-label { color: #888; font-size: 12px; }
+.demo-tag {
+  display: inline-block;
+  padding: 1px 6px;
+  font-size: 10px;
+  border-radius: 3px;
+  background: #e8f0ff;
+  color: #6686bf;
+  line-height: 1.4;
+}
+.kpi-value { font-size: 24px; font-weight: 600; color: #2c3e50; line-height: 1.2; }
+.kpi-value.placeholder { color: #6c7a93; }
+.kpi-sub { margin-top: 8px; display: flex; justify-content: space-between; align-items: center; }
 .kpi-unit { color: #888; font-size: 12px; }
-.kpi-unit.placeholder-label { color: #bbb; font-style: italic; }
+.change { font-size: 12px; font-weight: 500; }
+.change.up { color: #18a058; }
+.change.down { color: #d03050; }
 .sparkline { opacity: 1; }
-.sparkline.placeholder { opacity: 0.3; }
+.sparkline.placeholder { opacity: 0.5; }
 </style>

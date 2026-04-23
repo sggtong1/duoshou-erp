@@ -7,28 +7,28 @@
 
     <n-grid :cols="8" :x-gap="12" :y-gap="12" responsive="screen" :item-responsive="true">
       <n-gi :span="'s:4 m:2 l:2'">
-        <KpiCard label="销量" :value="kpis?.salesVolume" unit="件" :spark-shape="0" />
+        <KpiCard label="销量" :value="kpis?.salesVolume ?? 0" unit="件" :spark-shape="0" :change-pct="realVolumeChange" />
       </n-gi>
       <n-gi :span="'s:4 m:2 l:2'">
-        <KpiCard label="GMV" :value="null" unit="¥" placeholder placeholder-reason="GMV:需订单数据,v1.2 支持" :spark-shape="1" />
+        <KpiCard label="GMV" :value="DEMO_KPIS.gmvCents / 100" unit="$" placeholder placeholder-reason="GMV:演示数据,v1.2 接入订单 API 后真实化" :spark-shape="1" :change-pct="12.45" />
       </n-gi>
       <n-gi :span="'s:4 m:2 l:2'">
-        <KpiCard label="订单量" :value="null" unit="单" placeholder placeholder-reason="订单量:需订单数据,v1.2 支持" :spark-shape="2" />
+        <KpiCard label="订单量" :value="DEMO_KPIS.orderCount" unit="单" placeholder placeholder-reason="订单量:演示数据,v1.2 接入订单 API 后真实化" :spark-shape="2" :change-pct="8.32" />
       </n-gi>
       <n-gi :span="'s:4 m:2 l:2'">
-        <KpiCard label="净收益" :value="null" unit="¥" placeholder placeholder-reason="净收益:需订单+成本数据,v1.3 支持" :spark-shape="0" />
+        <KpiCard label="净收益" :value="DEMO_KPIS.netProfitCents / 100" unit="$" placeholder placeholder-reason="净收益:演示数据,v1.3 接入订单+成本后真实化" :spark-shape="0" :change-pct="15.67" />
       </n-gi>
       <n-gi :span="'s:4 m:2 l:2'">
-        <KpiCard label="毛利润" :value="null" unit="¥" placeholder placeholder-reason="毛利润:需成本上传,v1.2 支持" :spark-shape="1" />
+        <KpiCard label="毛利润" :value="DEMO_KPIS.grossProfitCents / 100" unit="$" placeholder placeholder-reason="毛利润:演示数据,v1.2 上传成本后真实化" :spark-shape="1" :change-pct="10.21" />
       </n-gi>
       <n-gi :span="'s:4 m:2 l:2'">
-        <KpiCard label="毛利率" :value="null" unit="%" placeholder placeholder-reason="毛利率:需成本上传,v1.2 支持" :spark-shape="2" />
+        <KpiCard label="毛利率" :value="DEMO_KPIS.grossMarginPct" unit="%" placeholder placeholder-reason="毛利率:演示数据,v1.2 上传成本后真实化" :spark-shape="2" :change-pct="1.25" />
       </n-gi>
       <n-gi :span="'s:4 m:2 l:2'">
-        <KpiCard label="广告花费" :value="null" unit="¥" placeholder placeholder-reason="广告花费:需广告 API,v1.3 支持" :spark-shape="0" />
+        <KpiCard label="广告花费" :value="DEMO_KPIS.adSpendCents / 100" unit="$" placeholder placeholder-reason="广告花费:演示数据,v1.3 接入广告 API 后真实化" :spark-shape="0" :change-pct="-9.31" />
       </n-gi>
       <n-gi :span="'s:4 m:2 l:2'">
-        <KpiCard label="ROAS" :value="null" placeholder placeholder-reason="ROAS:需广告 API,v1.3 支持" :spark-shape="1" />
+        <KpiCard label="ROAS" :value="DEMO_KPIS.roas" placeholder placeholder-reason="ROAS:演示数据,v1.3 接入广告 API 后真实化" :spark-shape="1" :change-pct="11.24" />
       </n-gi>
     </n-grid>
 
@@ -82,6 +82,7 @@ import FunnelChart from '@/components/dashboard/FunnelChart.vue';
 import ProductDetailTable from '@/components/dashboard/ProductDetailTable.vue';
 import AlertsCard from '@/components/dashboard/AlertsCard.vue';
 import LiveActivityCard from '@/components/dashboard/LiveActivityCard.vue';
+import { DEMO_KPIS } from '@/lib/demo-data';
 
 const dashboard = useDashboardStore();
 const filters = useFiltersStore();
@@ -89,6 +90,7 @@ const msg = useMessage();
 
 const kpis = computed(() => dashboard.data?.kpis);
 const syncing = ref(false);
+const realVolumeChange = null; // Real change-% comparison not yet computed; leave null so no arrow shows on real KPI
 
 const unsub = filters.onChange(() => dashboard.fetch(filters.toQuery()));
 onMounted(() => {
