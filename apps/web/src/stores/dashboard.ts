@@ -1,17 +1,33 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import { dashboardApi, type DashboardSummary } from '@/api-client/dashboard.api';
+import { dashboardApi, type DashboardSummary, type DashboardSummaryQuery } from '@/api-client/dashboard.api';
 
 export const useDashboardStore = defineStore('dashboard', () => {
   const data = ref<DashboardSummary | null>(null);
   const loading = ref(false);
-  const selectedShopId = ref<string | null>(null);
+  const error = ref<string | null>(null);
+  let currentAbort: AbortController | null = null;
 
-  async function fetch(shopId?: string | null) {
+  async function fetch(query: DashboardSummaryQuery = {}) {
+    if (currentAbort) currentAbort.abort();
+    const abort = new AbortController();
+    currentAbort = abort;
+
     loading.value = true;
+    error.value = null;
     try {
-      data.value = await dashboardApi.summary(shopId ?? undefined);
-    } finally { loading.value = false; }
+      const r = await dashboardApi.summary(query, abort.signal);
+      if (!abort.signal.aborted) data.value = r;
+    } catch (e: any) {
+      if (e.name === 'AbortError') return;
+      error.value = e?.message ?? 'fetch failed';
+    } finally {
+      if (currentAbort === abort) {
+        loading.value = false;
+        currentAbort = null;
+      }
+    }
   }
-  return { data, loading, selectedShopId, fetch };
+
+  return { data, loading, error, fetch };
 });

@@ -4,10 +4,11 @@ const BASE = import.meta.env.VITE_API_BASE_URL || '/api';
 
 export interface HttpOptions extends RequestInit {
   query?: Record<string, string | number | boolean | undefined | null>;
+  signal?: AbortSignal;
 }
 
 export async function http<T = unknown>(path: string, opts: HttpOptions = {}): Promise<T> {
-  const { query, headers, ...rest } = opts;
+  const { query, headers, signal, ...rest } = opts;
   const auth = useAuthStore();
 
   let url = BASE + path;
@@ -23,6 +24,7 @@ export async function http<T = unknown>(path: string, opts: HttpOptions = {}): P
   const isJson = typeof opts.body === 'string';
   const resp = await fetch(url, {
     ...rest,
+    signal,
     headers: {
       ...(isJson ? { 'Content-Type': 'application/json' } : {}),
       ...auth.authHeader(),
