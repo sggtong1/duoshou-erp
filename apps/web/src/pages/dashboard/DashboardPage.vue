@@ -32,7 +32,7 @@
       </n-gi>
     </n-grid>
 
-    <n-grid :cols="12" :x-gap="12" :y-gap="12" responsive="screen" style="margin-top: 12px;">
+    <n-grid :cols="12" :x-gap="12" :y-gap="12" responsive="screen" :item-responsive="true" style="margin-top: 12px;">
       <n-gi :span="'s:12 m:12 l:8'">
         <GmvOrdersTrendChart :data="dashboard.data" />
       </n-gi>
@@ -44,14 +44,14 @@
       </n-gi>
     </n-grid>
 
-    <n-grid :cols="4" :x-gap="12" :y-gap="12" responsive="screen" style="margin-top: 12px;">
+    <n-grid :cols="4" :x-gap="12" :y-gap="12" responsive="screen" :item-responsive="true" style="margin-top: 12px;">
       <n-gi :span="'s:4 m:2 l:1'"><RegionDonutChart :data="dashboard.data" /></n-gi>
       <n-gi :span="'s:4 m:2 l:1'"><AdPerformanceChart /></n-gi>
       <n-gi :span="'s:4 m:2 l:1'"><TopSkuListCard :data="dashboard.data" :time-range="filters.timeRange" /></n-gi>
       <n-gi :span="'s:4 m:2 l:1'"><FunnelChart /></n-gi>
     </n-grid>
 
-    <n-grid :cols="12" :x-gap="12" :y-gap="12" responsive="screen" style="margin-top: 12px;">
+    <n-grid :cols="12" :x-gap="12" :y-gap="12" responsive="screen" :item-responsive="true" style="margin-top: 12px;">
       <n-gi :span="'s:12 m:12 l:8'">
         <ProductDetailTable :data="dashboard.data" :time-range="filters.timeRange" />
       </n-gi>
