@@ -50,7 +50,7 @@ function rowClass(row: DashboardSkuRow) {
 onMounted(() => {
   if (!dashboard.data) dashboard.fetch(filters.toQuery());
 });
-watch(() => filters.toQuery(), (q) => dashboard.fetch(q), { deep: true });
+watch(() => filters.toQuery(), (q) => dashboard.fetch(q));
 </script>
 
 <style scoped>

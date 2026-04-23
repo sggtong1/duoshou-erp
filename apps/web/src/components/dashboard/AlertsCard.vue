@@ -58,7 +58,7 @@ defineProps<{ data: DashboardSummary | null }>();
   cursor: pointer;
 }
 .alert-row:hover:not(.placeholder) { background: #fafafa; }
-.alert-row.placeholder { cursor: not-allowed; opacity: 0.55; }
+.alert-row.placeholder { cursor: not-allowed; opacity: 0.55; pointer-events: none; }
 .alert-label { flex: 1; font-size: 13px; color: #333; }
 .alert-value { font-size: 16px; font-weight: 600; color: #d03050; }
 .placeholder .alert-value { color: #ccc; }

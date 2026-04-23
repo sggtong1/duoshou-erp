@@ -1,5 +1,5 @@
 <template>
-  <n-card title="销量趋势" :bordered="false">
+  <n-card title="销量趋势" :bordered="false" style="height: 320px;">
     <template #header-extra>
       <n-tooltip placement="top">
         <template #trigger>
@@ -8,7 +8,7 @@
         GMV / 订单量:需订单数据,v1.2 支持
       </n-tooltip>
     </template>
-    <v-chart :option="option" style="height: 260px;" autoresize />
+    <v-chart :option="option" style="height: 240px;" autoresize />
   </n-card>
 </template>
 

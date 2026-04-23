@@ -29,7 +29,7 @@ const option = computed(() => {
   const realTemu = props.data?.platformComparison.find((x) => x.platform === 'temu')?.salesVolume ?? 0;
   const values = [0, realTemu, 0, 0, 0];
   return {
-    grid: { left: 90, right: 20, top: 20, bottom: 20 },
+    grid: { left: 80, right: 20, top: 20, bottom: 20 },
     tooltip: { trigger: 'axis' },
     yAxis: { type: 'category', data: PLATFORMS },
     xAxis: { type: 'value' },

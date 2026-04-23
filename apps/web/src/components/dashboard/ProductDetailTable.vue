@@ -23,13 +23,18 @@ const props = defineProps<{ data: DashboardSummary | null; timeRange: TimeRange 
 const rows = computed<DashboardSkuRow[]>(() => props.data?.productDetails.items ?? []);
 
 const highlightSku = ref<string | null>(null);
+let highlightTimer: ReturnType<typeof setTimeout> | null = null;
 function onHighlight(e: Event) {
   const d = (e as CustomEvent).detail;
   highlightSku.value = d?.platformSkuId ?? null;
-  setTimeout(() => { highlightSku.value = null; }, 2000);
+  if (highlightTimer) clearTimeout(highlightTimer);
+  highlightTimer = setTimeout(() => { highlightSku.value = null; highlightTimer = null; }, 2000);
 }
 onMounted(() => window.addEventListener('duoshou:highlight-sku', onHighlight));
-onUnmounted(() => window.removeEventListener('duoshou:highlight-sku', onHighlight));
+onUnmounted(() => {
+  window.removeEventListener('duoshou:highlight-sku', onHighlight);
+  if (highlightTimer) clearTimeout(highlightTimer);
+});
 
 function rowClass(row: DashboardSkuRow) {
   return row.platformSkuId === highlightSku.value ? 'row-highlight' : '';
