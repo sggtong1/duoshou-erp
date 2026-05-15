@@ -9,10 +9,6 @@ concurrency:
   group: deploy-main
   cancel-in-progress: true
 
-defaults:
-  run:
-    working-directory: duoshou-erp
-
 jobs:
   build-push:
     needs: []
@@ -43,15 +39,15 @@ jobs:
       - name: Build + push API
         uses: docker/build-push-action@v5
         with:
-          context: duoshou-erp
-          file: duoshou-erp/infra/docker/api.Dockerfile
+          context: .
+          file: infra/docker/api.Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.image_api }}
       - name: Build + push Web
         uses: docker/build-push-action@v5
         with:
-          context: duoshou-erp
-          file: duoshou-erp/infra/docker/web.Dockerfile
+          context: .
+          file: infra/docker/web.Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.image_web }}
           build-args: |

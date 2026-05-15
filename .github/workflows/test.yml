@@ -6,10 +6,6 @@ on:
   pull_request:
     branches: [main]
 
-defaults:
-  run:
-    working-directory: duoshou-erp
-
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -22,7 +18,7 @@ jobs:
         with:
           node-version: '20.11.0'
           cache: 'pnpm'
-          cache-dependency-path: 'duoshou-erp/pnpm-lock.yaml'
+          cache-dependency-path: 'pnpm-lock.yaml'
       - name: Install
         run: pnpm install --frozen-lockfile
       - name: Extract Temu spec (cached)
