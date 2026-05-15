@@ -85,8 +85,25 @@ pnpm dev:api
 pnpm dev:web
 ```
 
-- API: http://localhost:3000/api/health
+- API: http://localhost:4000/api/health
 - Web: http://localhost:5173
+
+### Ports (mac mini dev machine)
+
+The mac mini hosts several long-running services. duoshou-erp's API was moved off the default 3000 to avoid them; the current allocation is:
+
+| Port | Owner |
+|------|-------|
+| 3000 | `mini-metabase` (BI, always-on) |
+| 3001 | `supply-chain-api` |
+| **4000** | **`duoshou-erp-api`** |
+| 5173 | Vite dev (shared by supply-chain / duoshou-erp — don't run both at once) |
+| 5432 | `mini-postgres` |
+| 5433 | `supply-chain-postgres` |
+| 6379 | `mini-redis` |
+| 8081 | `mini-adminer` |
+
+If you run this project on a different machine where 3000 is free, change `PORT` in `apps/api/.env.development` and the matching `proxy` target in `apps/web/vite.config.ts`.
 
 ### Test
 
