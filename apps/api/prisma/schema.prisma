@@ -387,3 +387,150 @@ model OrgSettings {
   org Organization @relation(fields: [orgId], references: [id])
   @@map("org_settings")
 }
+
+// ============================================================
+// BI 专用表(数据来源: mini PG 同步,只读)
+// ============================================================
+
+model BiSyncLog {
+  id            String    @id
+  orgId         String    @map("org_id")
+  syncType      String    @map("sync_type")
+  tableName     String    @map("table_name")
+  rowsSynced    Int       @default(0) @map("rows_synced")
+  startedAt     DateTime  @default(now()) @map("started_at") @db.Timestamp(3)
+  finishedAt    DateTime? @map("finished_at") @db.Timestamp(3)
+  status        String
+  errorMessage  String?   @map("error_message")
+  sourceMaxDate DateTime? @map("source_max_date") @db.Date
+
+  @@index([orgId, finishedAt(sort: Desc)], map: "bi_sync_log_org_finished_idx")
+  @@map("bi_sync_log")
+}
+
+model BiOrgDaily {
+  orgId            String   @map("org_id")
+  businessDate     DateTime @map("business_date") @db.Date
+  salesVolume      Int      @default(0) @map("sales_volume")
+  orderCount       Int?     @map("order_count")
+  gmvCents         BigInt?  @map("gmv_cents")
+  grossProfitCents BigInt?  @map("gross_profit_cents")
+  netProfitCents   BigInt?  @map("net_profit_cents")
+  grossMarginPct   Decimal? @map("gross_margin_pct") @db.Decimal(6, 4)
+  adSpendCents     BigInt?  @map("ad_spend_cents")
+  roas             Decimal? @db.Decimal(8, 2)
+  refundCents      BigInt?  @map("refund_cents")
+  refundRate       Decimal? @map("refund_rate") @db.Decimal(6, 4)
+  syncedAt         DateTime @default(now()) @map("synced_at") @db.Timestamp(3)
+
+  @@id([orgId, businessDate])
+  @@index([businessDate(sort: Desc)], map: "bi_org_daily_date_idx")
+  @@map("bi_org_daily")
+}
+
+model BiShopDaily {
+  orgId            String   @map("org_id")
+  shopId           String   @map("shop_id")
+  shopName         String?  @map("shop_name")
+  platform         String?
+  region           String?
+  businessDate     DateTime @map("business_date") @db.Date
+  salesVolume      Int      @default(0) @map("sales_volume")
+  orderCount       Int?     @map("order_count")
+  gmvCents         BigInt?  @map("gmv_cents")
+  grossProfitCents BigInt?  @map("gross_profit_cents")
+  netProfitCents   BigInt?  @map("net_profit_cents")
+  grossMarginPct   Decimal? @map("gross_margin_pct") @db.Decimal(6, 4)
+  adSpendCents     BigInt?  @map("ad_spend_cents")
+  refundCents      BigInt?  @map("refund_cents")
+  refundRate       Decimal? @map("refund_rate") @db.Decimal(6, 4)
+  syncedAt         DateTime @default(now()) @map("synced_at") @db.Timestamp(3)
+
+  @@id([orgId, shopId, businessDate])
+  @@index([orgId, businessDate(sort: Desc)], map: "bi_shop_daily_org_date_idx")
+  @@map("bi_shop_daily")
+}
+
+model BiPlatformDaily {
+  orgId          String   @map("org_id")
+  platform       String
+  businessDate   DateTime @map("business_date") @db.Date
+  salesVolume    Int      @default(0) @map("sales_volume")
+  orderCount     Int?     @map("order_count")
+  gmvCents       BigInt?  @map("gmv_cents")
+  netProfitCents BigInt?  @map("net_profit_cents")
+  shopCount      Int      @default(0) @map("shop_count")
+  syncedAt       DateTime @default(now()) @map("synced_at") @db.Timestamp(3)
+
+  @@id([orgId, platform, businessDate])
+  @@index([orgId, businessDate(sort: Desc)], map: "bi_platform_daily_org_date_idx")
+  @@map("bi_platform_daily")
+}
+
+model BiRegionDaily {
+  orgId          String   @map("org_id")
+  region         String
+  businessDate   DateTime @map("business_date") @db.Date
+  salesVolume    Int      @default(0) @map("sales_volume")
+  orderCount     Int?     @map("order_count")
+  gmvCents       BigInt?  @map("gmv_cents")
+  netProfitCents BigInt?  @map("net_profit_cents")
+  shopCount      Int      @default(0) @map("shop_count")
+  syncedAt       DateTime @default(now()) @map("synced_at") @db.Timestamp(3)
+
+  @@id([orgId, region, businessDate])
+  @@index([orgId, businessDate(sort: Desc)], map: "bi_region_daily_org_date_idx")
+  @@map("bi_region_daily")
+}
+
+model BiSkuDaily {
+  orgId            String   @map("org_id")
+  shopId           String   @map("shop_id")
+  shopName         String?  @map("shop_name")
+  platformSkuId    String   @map("platform_sku_id")
+  skuTitle         String?  @map("sku_title")
+  platform         String?
+  region           String?
+  businessDate     DateTime @map("business_date") @db.Date
+  salesVolume      Int      @default(0) @map("sales_volume")
+  gmvCents         BigInt?  @map("gmv_cents")
+  grossProfitCents BigInt?  @map("gross_profit_cents")
+  netProfitCents   BigInt?  @map("net_profit_cents")
+  grossMarginPct   Decimal? @map("gross_margin_pct") @db.Decimal(6, 4)
+  unitCostCents    BigInt?  @map("unit_cost_cents")
+  refundCents      BigInt?  @map("refund_cents")
+  refundRate       Decimal? @map("refund_rate") @db.Decimal(6, 4)
+  returnRate       Decimal? @map("return_rate") @db.Decimal(6, 4)
+  syncedAt         DateTime @default(now()) @map("synced_at") @db.Timestamp(3)
+
+  @@id([orgId, shopId, platformSkuId, businessDate])
+  @@index([orgId, businessDate(sort: Desc)], map: "bi_sku_daily_org_date_idx")
+  @@index([orgId, businessDate(sort: Desc), netProfitCents(sort: Desc)], map: "bi_sku_daily_org_profit_idx")
+  @@map("bi_sku_daily")
+}
+
+model BiSkuSnapshot {
+  orgId             String    @map("org_id")
+  shopId            String    @map("shop_id")
+  shopName          String?   @map("shop_name")
+  platformSkuId     String    @map("platform_sku_id")
+  skuTitle          String?   @map("sku_title")
+  platform          String?
+  region            String?
+  todaySaleVolume   Int       @default(0) @map("today_sale_volume")
+  sales7dVolume     Int       @default(0) @map("sales_7d_volume")
+  sales30dVolume    Int       @default(0) @map("sales_30d_volume")
+  totalSaleVolume   Int       @default(0) @map("total_sale_volume")
+  warehouseQty      Int       @default(0) @map("warehouse_qty")
+  avgDailySales     Decimal?  @map("avg_daily_sales") @db.Decimal(8, 2)
+  daysRemaining     Decimal?  @map("days_remaining") @db.Decimal(6, 2)
+  unitCostCents     BigInt?   @map("unit_cost_cents")
+  skuStatus         String?   @map("sku_status")
+  lastBusinessDate  DateTime? @map("last_business_date") @db.Date
+  syncedAt          DateTime  @default(now()) @map("synced_at") @db.Timestamp(3)
+
+  @@id([orgId, shopId, platformSkuId])
+  @@index([orgId, daysRemaining], map: "bi_sku_snapshot_low_stock_idx")
+  @@index([orgId, sales30dVolume(sort: Desc)], map: "bi_sku_snapshot_org_sales30_idx")
+  @@map("bi_sku_snapshot")
+}

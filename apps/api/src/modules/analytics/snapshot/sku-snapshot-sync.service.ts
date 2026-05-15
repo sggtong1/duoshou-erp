@@ -1,3 +1,8 @@
+// DEPRECATED 2026-05-11: BI 数据采集已迁移至 mini-services/sync/sync_bi.py，
+// Dashboard 数据来源切换为 Supabase bi_* 表（从 mini Postgres 同步）。
+// 本 service 仅由 DashboardController POST /dashboard/sync/now 端点保留为可手动触发的兜底，
+// 定时调度已通过移除 SkuSnapshotSyncCron 的 providers 注册而停止。
+// 不要新增依赖此 service 的代码；后续完全废弃后可整目录删除。
 import { Injectable, Logger } from '@nestjs/common';
 import type Redis from 'ioredis';
 import { PrismaService } from '../../../infra/prisma.service';
