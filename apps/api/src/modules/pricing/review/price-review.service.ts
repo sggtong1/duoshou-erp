@@ -2,17 +2,34 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../../infra/prisma.service';
 import { TemuClientFactoryService } from '../../platform/temu/temu-client-factory.service';
 import { pricingEndpoints } from '../pricing-endpoints';
-import type { ListReviewsFilterInput } from './price-review.dto';
+import type { ListReviewsFilterInput, RejectReviewItemInput } from './price-review.dto';
 
 function bigIntToNumber(v: bigint | null | undefined): number | null {
   return v == null ? null : Number(v);
 }
 
+function arrayFromPayload(value: unknown): any[] {
+  return Array.isArray(value) ? value : [];
+}
+
+function productSkuIdsFromReview(r: any): string[] {
+  const payload = r.platformPayload ?? {};
+  const ids = arrayFromPayload(payload.productSkuIdList);
+  if (ids.length) return ids.map((x) => String(x));
+  return r.platformSkuId ? [String(r.platformSkuId)] : [];
+}
+
 function serialize(r: any) {
+  const payload = r.platformPayload ?? {};
   return {
     ...r,
     currentPriceCents: bigIntToNumber(r.currentPriceCents),
     suggestedPriceCents: bigIntToNumber(r.suggestedPriceCents),
+    productSkuIds: productSkuIdsFromReview(r),
+    siteIds: arrayFromPayload(payload.siteIds).map((x) => Number(x)).filter(Number.isFinite),
+    siteNameList: arrayFromPayload(payload.siteNameList).map((x) => String(x)),
+    canBargain: typeof payload.canBargain === 'boolean' ? payload.canBargain : null,
+    rawStatus: typeof payload.orderStatus === 'number' ? payload.orderStatus : null,
   };
 }
 
@@ -35,7 +52,18 @@ export class PriceReviewService {
       (this.prisma as any).priceReview.count({ where }),
       (this.prisma as any).priceReview.findMany({
         where,
-        include: { shop: { select: { id: true, displayName: true, platformShopId: true, shopType: true } } },
+        include: {
+          shop: {
+            select: {
+              id: true,
+              platform: true,
+              displayName: true,
+              platformShopId: true,
+              shopType: true,
+              region: true,
+            },
+          },
+        },
         orderBy: [{ status: 'asc' }, { receivedAt: 'desc' }],
         skip: (page - 1) * pageSize,
         take: pageSize,
@@ -76,7 +104,9 @@ export class PriceReviewService {
     return { total: reviews.length, results };
   }
 
-  async batchReject(orgId: string, reviewIds: string[], counterPriceCents: Record<string, number>) {
+  async batchReject(orgId: string, items: RejectReviewItemInput[]) {
+    const reviewIds = items.map((x) => x.reviewId);
+    const byId = new Map(items.map((x) => [x.reviewId, x]));
     const reviews = await (this.prisma as any).priceReview.findMany({
       where: { id: { in: reviewIds }, orgId, status: 'pending' },
       include: { shop: true },
@@ -85,10 +115,24 @@ export class PriceReviewService {
     for (const r of reviews) {
       const ep = pricingEndpoints({ shopType: r.shop.shopType, region: r.shop.region });
       const client = await this.clientFactory.forShop(r.shopId);
-      const counter = counterPriceCents[r.id];
-      if (!counter) { results.push({ id: r.id, ok: false, error: 'missing counter price' }); continue; }
+      const input = byId.get(r.id);
+      if (!input) { results.push({ id: r.id, ok: false, error: 'missing reject payload' }); continue; }
+      const priceItemList = this.buildRejectPriceItems(r, input);
+      if (!priceItemList.length) { results.push({ id: r.id, ok: false, error: 'missing sku price items' }); continue; }
       try {
-        await client.call(ep.rejectReview, { orderId: Number(r.platformOrderId), newSupplierPrice: String(counter) });
+        await client.call(ep.rejectReview, {
+          orderId: Number(r.platformOrderId),
+          priceItemList,
+          ...(input.reasons?.length ? {
+            bargainReasonList: [{
+              componentList: input.reasons.map((reason) => ({
+                type: reason.type,
+                reason: reason.reason,
+              })),
+              ...(input.externalLinks?.length ? { externalLinkList: input.externalLinks } : {}),
+            }],
+          } : {}),
+        });
         await (this.prisma as any).priceReview.update({
           where: { id: r.id },
           data: { status: 'rejected', resolvedAt: new Date() },
@@ -99,5 +143,23 @@ export class PriceReviewService {
       }
     }
     return { total: reviews.length, results };
+  }
+
+  private buildRejectPriceItems(review: any, input: RejectReviewItemInput) {
+    if (input.priceItems?.length) {
+      return input.priceItems.map((it) => ({
+        productSkuId: Number(it.productSkuId),
+        price: String(it.priceCents),
+      })).filter((it) => Number.isFinite(it.productSkuId));
+    }
+
+    if (!input.counterPriceCents) return [];
+    return productSkuIdsFromReview(review)
+      .map((productSkuId) => Number(productSkuId))
+      .filter(Number.isFinite)
+      .map((productSkuId) => ({
+        productSkuId,
+        price: String(input.counterPriceCents),
+      }));
   }
 }

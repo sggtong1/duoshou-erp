@@ -28,7 +28,7 @@ export function pricingEndpoints(ctx: ShopPricingCtx): PricingEndpoints {
     listReviews: 'bg.semi.price.review.page.query.order',
     confirmReview: 'bg.semi.price.review.confirm.order',
     rejectReview: 'bg.semi.price.review.reject.order',
-    listAdjustments: 'bg.semi.adjust.price.page.query',
+    listAdjustments: isPa ? 'bg.semi.adjust.price.page.query.order' : 'bg.semi.adjust.price.page.query',
     submitAdjustment: isPa ? 'bg.semi.adjust.price.batch.review.order' : 'bg.semi.adjust.price.batch.review',
     priceHistory: isPa ? 'bg.glo.goods.price.list.get' : 'bg.goods.price.list.get',
   };

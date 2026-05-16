@@ -88,11 +88,10 @@ Temu 官方卖家中心是「单店视角」—— 同一个商家如果管理 5
 
 ### Step 6:核价提醒(只读)
 
-左侧点「🔔 核价提醒」:
-- 页面顶部 banner 明确说明:「当前模块为只读提醒视图。批量同意/拒绝请到 Temu 卖家中心操作」
+左侧点「价格操作台」:
 - 展示所有待处理核价单列表(合并所有店铺)
-- 每行可点「详情」进入单个核价单只读视图
-- **不提供任何写入操作**(不调 `.confirm` / `.reject` 接口)
+- 支持核价单同意/拒绝、调价单通过/驳回、SKU 供货价查询
+- 全托调价单当前平台接口仅支持通过,不支持驳回
 
 ### Step 7:设置
 
@@ -118,13 +117,16 @@ Temu 官方卖家中心是「单店视角」—— 同一个商家如果管理 5
 | `bg.mall.info.get` | 店铺连接时验证凭据 + 检查 shopType 一致 | 每次用户连店一次 |
 | `bg.goods.salesv2.get` | SKU 销量 + 库存快照同步(Dashboard 数据源) | 每店每小时 1 次,分页至 total |
 | `bg.glo.goods.list.get` / `bg.goods.list.get` | 商品列表同步(「我的商品」页) | 每店每 30 分钟 1 次 |
-| `bg.price.review.page.query` / `bg.semi.price.review.page.query.order` | 核价单列表查询(只读展示) | 每天 1 次 |
+| `bg.price.review.page.query` / `bg.semi.price.review.page.query.order` | 核价单列表查询 | 每天 1 次 |
+| `bg.price.review.confirm` / `bg.semi.price.review.confirm.order` | 核价单同意 | 用户触发 |
+| `bg.price.review.reject` / `bg.semi.price.review.reject.order` | 核价单拒绝并重新报价 | 用户触发 |
+| `bg.full.adjust.price.page.query` / `bg.semi.adjust.price.page.query` / `.order` | 调价单查询 | 用户触发 |
+| `bg.full.adjust.price.batch.review` / `bg.semi.adjust.price.batch.review` / `.order` | 调价单审核 | 用户触发 |
+| `bg.goods.price.list.get` / `bg.glo.goods.price.list.get` | 供货价查询 | 用户触发 |
 
 ### 本应用**不会**调用的 Temu API(本 MVP 明确不做)
 
 - **写入类**:`bg.goods.add` / `bg.goods.edit` / 各种发布/编辑/删除接口
-- **价格调整**:`bg.semi.adjust.price.batch.review` / `bg.full.adjust.price.batch.review`
-- **核价操作**:`.confirm` / `.reject` 系列
 - **活动报名**:`bg.marketing.activity.enroll.submit`
 
 ### 多店并发

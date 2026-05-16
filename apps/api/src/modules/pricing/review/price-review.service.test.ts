@@ -64,3 +64,48 @@ describe('PriceReviewService.batchConfirm', () => {
     });
   });
 });
+
+describe('PriceReviewService.batchReject', () => {
+  it('calls reject API with priceItemList and bargain reasons', async () => {
+    const mockClient = { call: vi.fn().mockResolvedValue({ success: true }) };
+    const clientFactory = { forShop: vi.fn().mockResolvedValue(mockClient) };
+    const prisma: any = {
+      priceReview: {
+        findMany: vi.fn().mockResolvedValue([
+          {
+            id: 'r1',
+            orgId: 'org-1',
+            shopId: 'shop-1',
+            platformOrderId: '1001',
+            status: 'pending',
+            platformPayload: { productSkuIdList: [2001, 2002] },
+            shop: { shopType: 'full', region: 'cn' },
+          },
+        ]),
+        update: vi.fn(),
+      },
+    };
+    const svc = new PriceReviewService(prisma, clientFactory as any);
+
+    await svc.batchReject('org-1', [{
+      reviewId: 'r1',
+      counterPriceCents: 888,
+      reasons: [{ type: 2, reason: '成本无法覆盖' }],
+    }]);
+
+    expect(mockClient.call).toHaveBeenCalledWith('bg.price.review.reject', {
+      orderId: 1001,
+      priceItemList: [
+        { productSkuId: 2001, price: '888' },
+        { productSkuId: 2002, price: '888' },
+      ],
+      bargainReasonList: [{
+        componentList: [{ type: 2, reason: '成本无法覆盖' }],
+      }],
+    });
+    expect(prisma.priceReview.update).toHaveBeenCalledWith({
+      where: { id: 'r1' },
+      data: expect.objectContaining({ status: 'rejected' }),
+    });
+  });
+});

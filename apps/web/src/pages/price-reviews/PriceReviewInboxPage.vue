@@ -1,8 +1,7 @@
 <template>
-  <n-card title="核价单(只读)">
+  <n-card title="核价单">
     <n-alert type="info" style="margin-bottom: 12px;">
-      当前模块为只读提醒视图。批量同意/拒绝请到
-      <a href="https://agentseller.temu.com" target="_blank">Temu 卖家中心</a> 操作。
+      当前核价单已合并到价格操作台，支持同步、批量同意和批量拒绝。
     </n-alert>
 
     <n-space style="margin-bottom: 12px;">

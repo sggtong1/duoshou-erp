@@ -24,6 +24,7 @@ describe('pricingEndpoints', () => {
     expect(e.confirmReview).toBe('bg.semi.price.review.confirm.order');
     expect(e.rejectReview).toBe('bg.semi.price.review.reject.order');
     expect(e.submitAdjustment).toBe('bg.semi.adjust.price.batch.review.order');
+    expect(e.listAdjustments).toBe('bg.semi.adjust.price.page.query.order');
     expect(e.priceHistory).toBe('bg.glo.goods.price.list.get');
   });
 
