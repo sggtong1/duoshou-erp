@@ -1,28 +1,36 @@
 <template>
-  <n-card title="活动日历">
-    <template #header-extra>
+  <div class="activities-page page-shell">
+    <div class="page-hero">
+      <div>
+        <p class="page-eyebrow">CAMPAIGN OPERATIONS</p>
+        <h1 class="page-title-main">活动日历</h1>
+        <p class="page-subtitle">集中查看可报名活动、跨店报名进度和 SKU 覆盖情况。</p>
+      </div>
       <n-space>
         <n-button :loading="syncing" @click="syncNow">立即同步</n-button>
-        <n-button @click="() => load(page)">手动刷新</n-button>
+        <n-button type="primary" @click="() => load(page)">刷新</n-button>
       </n-space>
-    </template>
+    </div>
 
-    <n-space style="margin-bottom: 12px;" wrap>
-      <n-select v-model:value="region" :options="regionOptions" placeholder="区域" clearable style="min-width: 120px;" @update:value="() => load(1)" />
-      <n-select v-model:value="status" :options="statusOptions" placeholder="状态" clearable style="min-width: 120px;" @update:value="() => load(1)" />
-      <n-select v-model:value="shopId" :options="shopOptions" placeholder="筛选店铺" clearable style="min-width: 180px;" @update:value="() => load(1)" />
-      <n-input v-model:value="search" placeholder="搜索活动名" clearable @keyup.enter="load(1)" style="min-width: 180px;" />
-    </n-space>
+    <n-card title="活动列表">
+      <div class="table-toolbar">
+        <n-select v-model:value="region" :options="regionOptions" placeholder="区域" clearable class="filter" @update:value="() => load(1)" />
+        <n-select v-model:value="status" :options="statusOptions" placeholder="状态" clearable class="filter" @update:value="() => load(1)" />
+        <n-select v-model:value="shopId" :options="shopOptions" placeholder="筛选店铺" clearable class="shop-filter" @update:value="() => load(1)" />
+        <n-input v-model:value="search" placeholder="搜索活动名" clearable class="search" @keyup.enter="load(1)" />
+      </div>
 
-    <n-data-table
-      :columns="columns"
-      :data="store.items"
-      :loading="store.loading"
-      :row-key="(r: any) => r.id"
-    />
+      <n-data-table
+        :columns="columns"
+        :data="store.items"
+        :loading="store.loading"
+        :row-key="(r: any) => r.id"
+        size="small"
+      />
 
-    <n-pagination v-model:page="page" :page-count="pageCount" @update:page="load" style="margin-top: 12px;" />
-  </n-card>
+      <n-pagination v-model:page="page" :page-count="pageCount" class="pager" @update:page="load" />
+    </n-card>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -107,9 +115,9 @@ const columns: any[] = [
     title: '跨店状态',
     key: 'crossShop',
     render: (r: Activity) => h('div', { style: 'line-height: 1.6;' }, [
-      h('div', `📦 ${r.shopCount} 店可报`),
-      h('div', `✅ ${r.enrolledShopCount} 店已报`),
-      h('div', `📝 已报 ${r.enrolledSkuCount} SKU`),
+      h('div', `${r.shopCount} 店可报`),
+      h('div', `${r.enrolledShopCount} 店已报`),
+      h('div', `已报 ${r.enrolledSkuCount} SKU`),
     ]),
   },
   {
@@ -126,3 +134,34 @@ const columns: any[] = [
   },
 ];
 </script>
+
+<style scoped>
+.table-toolbar {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.filter {
+  width: 130px;
+}
+.shop-filter {
+  width: 220px;
+}
+.search {
+  min-width: 220px;
+  flex: 1;
+}
+.pager {
+  margin-top: 12px;
+  justify-content: flex-end;
+}
+@media (max-width: 760px) {
+  .filter,
+  .shop-filter,
+  .search {
+    width: 100%;
+    min-width: 0;
+  }
+}
+</style>

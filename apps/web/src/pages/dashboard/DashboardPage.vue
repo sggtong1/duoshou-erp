@@ -1,8 +1,18 @@
 <template>
-  <div class="dashboard">
-    <div class="sync-bar">
-      <span v-if="dashboard.error" class="err">{{ dashboard.error }}</span>
-      <n-button :loading="syncing" size="small" @click="onSyncNow">🔄 立即同步</n-button>
+  <div class="dashboard page-shell">
+    <div class="page-hero">
+      <div>
+        <p class="page-eyebrow">BUSINESS COMMAND CENTER</p>
+        <h1 class="page-title-main">跨平台经营总览</h1>
+        <p class="page-subtitle">
+          聚合店铺、商品、库存与利润指标，帮助运营团队从数据洞察快速进入执行动作。
+        </p>
+      </div>
+      <div class="hero-actions">
+        <span v-if="dashboard.error" class="err">{{ dashboard.error }}</span>
+        <n-button :loading="syncing" secondary @click="onSyncNow">立即同步</n-button>
+        <n-button type="primary" @click="$router.push('/pricing-ops')">处理价格任务</n-button>
+      </div>
     </div>
 
     <n-grid :cols="8" :x-gap="12" :y-gap="12" responsive="screen" :item-responsive="true">
@@ -32,7 +42,11 @@
       </n-gi>
     </n-grid>
 
-    <n-grid :cols="12" :x-gap="12" :y-gap="12" responsive="screen" :item-responsive="true" style="margin-top: 12px;">
+    <div class="section-title">
+      <strong>经营趋势</strong>
+      <span>销售、平台与店铺表现</span>
+    </div>
+    <n-grid :cols="12" :x-gap="12" :y-gap="12" responsive="screen" :item-responsive="true">
       <n-gi :span="'s:12 m:12 l:8'">
         <GmvOrdersTrendChart :data="dashboard.data" />
       </n-gi>
@@ -44,14 +58,22 @@
       </n-gi>
     </n-grid>
 
-    <n-grid :cols="4" :x-gap="12" :y-gap="12" responsive="screen" :item-responsive="true" style="margin-top: 12px;">
+    <div class="section-title">
+      <strong>结构分析</strong>
+      <span>区域、广告、SKU 与漏斗观察</span>
+    </div>
+    <n-grid :cols="4" :x-gap="12" :y-gap="12" responsive="screen" :item-responsive="true">
       <n-gi :span="'s:4 m:2 l:1'"><RegionDonutChart :data="dashboard.data" /></n-gi>
       <n-gi :span="'s:4 m:2 l:1'"><AdPerformanceChart /></n-gi>
       <n-gi :span="'s:4 m:2 l:1'"><TopSkuListCard :data="dashboard.data" :time-range="filters.timeRange" /></n-gi>
       <n-gi :span="'s:4 m:2 l:1'"><FunnelChart /></n-gi>
     </n-grid>
 
-    <n-grid :cols="12" :x-gap="12" :y-gap="12" responsive="screen" :item-responsive="true" style="margin-top: 12px;">
+    <div class="section-title">
+      <strong>运营明细</strong>
+      <span>商品、异常与实时事项</span>
+    </div>
+    <n-grid :cols="12" :x-gap="12" :y-gap="12" responsive="screen" :item-responsive="true">
       <n-gi :span="'s:12 m:12 l:8'">
         <ProductDetailTable :data="dashboard.data" :time-range="filters.timeRange" />
       </n-gi>
@@ -118,7 +140,20 @@ async function onSyncNow() {
 </script>
 
 <style scoped>
-.dashboard { max-width: 1600px; margin: 0 auto; }
-.sync-bar { display: flex; justify-content: flex-end; align-items: center; gap: 12px; margin-bottom: 10px; }
+.hero-actions { display: flex; justify-content: flex-end; align-items: center; gap: 10px; flex-wrap: wrap; }
 .err { color: #d03050; font-size: 12px; }
+.section-title {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin: 18px 0 10px;
+}
+.section-title strong {
+  color: var(--ds-ink);
+  font-size: 16px;
+}
+.section-title span {
+  color: var(--ds-muted);
+  font-size: 12px;
+}
 </style>

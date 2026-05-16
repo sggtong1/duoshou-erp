@@ -1,12 +1,15 @@
 <template>
-  <div class="inventory-alerts">
-    <n-card title="库存预警" :bordered="false">
-      <template #header-extra>
-        <n-tag :bordered="false" type="warning">
-          共 {{ alerts.length }} 条
-        </n-tag>
-      </template>
+  <div class="inventory-alerts page-shell">
+    <div class="page-hero">
+      <div>
+        <p class="page-eyebrow">INVENTORY WATCH</p>
+        <h1 class="page-title-main">库存预警</h1>
+        <p class="page-subtitle">按当前筛选口径识别低库存和可售天数不足的 SKU，帮助运营提前补货。</p>
+      </div>
+      <n-tag :bordered="false" type="warning">共 {{ alerts.length }} 条</n-tag>
+    </div>
 
+    <n-card title="风险 SKU">
       <n-data-table
         :columns="columns"
         :data="alerts"
@@ -54,7 +57,6 @@ watch(() => filters.toQuery(), (q) => dashboard.fetch(q));
 </script>
 
 <style scoped>
-.inventory-alerts { max-width: 1400px; margin: 0 auto; }
 :deep(.row-red td) { background: #fff1f0 !important; }
 :deep(.row-yellow td) { background: #fff7e6 !important; }
 </style>

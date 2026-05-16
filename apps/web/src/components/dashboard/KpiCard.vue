@@ -79,30 +79,34 @@ const sparkColor = computed(() => (props.placeholder ? '#a0b5e0' : '#18a058'));
 </script>
 
 <style scoped>
-.kpi-card { background: #fff; min-height: 110px; }
+.kpi-card {
+  background: #fff;
+  min-height: 110px;
+  border-color: var(--ds-line);
+}
 .kpi-card.placeholder {
-  background: #fafbff;
+  background: #f8fbff;
   border-style: dashed;
-  border-color: #d0dfff;
+  border-color: #cfe0fb;
 }
 .kpi-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
-.kpi-label { color: #888; font-size: 12px; }
+.kpi-label { color: var(--ds-muted); font-size: 12px; font-weight: 700; }
 .demo-tag {
   display: inline-block;
   padding: 1px 6px;
   font-size: 10px;
-  border-radius: 3px;
-  background: #e8f0ff;
-  color: #6686bf;
+  border-radius: 999px;
+  background: var(--ds-primary-soft);
+  color: var(--ds-primary-strong);
   line-height: 1.4;
 }
-.kpi-value { font-size: 24px; font-weight: 600; color: #2c3e50; line-height: 1.2; }
+.kpi-value { font-size: 26px; font-weight: 800; color: var(--ds-ink); line-height: 1.2; }
 .kpi-value.placeholder { color: #6c7a93; }
 .kpi-sub { margin-top: 8px; display: flex; justify-content: space-between; align-items: center; }
-.kpi-unit { color: #888; font-size: 12px; }
+.kpi-unit { color: var(--ds-muted); font-size: 12px; }
 .change { font-size: 12px; font-weight: 500; }
-.change.up { color: #18a058; }
-.change.down { color: #d03050; }
+.change.up { color: var(--ds-success); }
+.change.down { color: var(--ds-danger); }
 .sparkline { opacity: 1; }
 .sparkline.placeholder { opacity: 0.5; }
 </style>
