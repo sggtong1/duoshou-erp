@@ -44,6 +44,37 @@ export class TemuProxyController {
     return this.proxy.getCategoryAttrs(shopId, Number(catId));
   }
 
+  @Get('goods')
+  async goods(
+    @Req() req: any,
+    @Query('shopId') shopId: string,
+    @Query('page') page = '1',
+    @Query('pageSize') pageSize = '20',
+    @Query('productName') productName?: string,
+    @Query('skcExtCode') skcExtCode?: string,
+    @Query('siteId') siteId?: string,
+    @Query('skcSiteStatus') skcSiteStatus?: string,
+    @Query('matchJitMode') matchJitMode?: string,
+  ) {
+    if (!shopId) throw new BadRequestException('shopId is required');
+    await this.assertShopBelongsToUser(req, shopId);
+    return this.proxy.listGoods(shopId, {
+      page: Number(page),
+      pageSize: Number(pageSize),
+      productName: productName || undefined,
+      skcExtCode: skcExtCode || undefined,
+      bindSiteIds: siteId ? [Number(siteId)] : undefined,
+      skcSiteStatus:
+        skcSiteStatus != null && skcSiteStatus !== ''
+          ? Number(skcSiteStatus) === 1
+            ? 1
+            : 0
+          : undefined,
+      matchJitMode:
+        matchJitMode != null && matchJitMode !== '' ? matchJitMode === 'true' : undefined,
+    });
+  }
+
   @Post('images/upload')
   @UseInterceptors(FileInterceptor('file', { limits: { fileSize: 10 * 1024 * 1024 } }))
   async uploadImage(
