@@ -1,50 +1,67 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { AuthGuard } from './auth.guard';
 
 describe('AuthGuard', () => {
-  const makeCtx = (headers: any) => ({
-    switchToHttp: () => ({ getRequest: () => ({ headers }) }),
-  }) as any;
+  const makeCtx = (headers: any) => {
+    const req: any = { headers };
+    return {
+      ctx: { switchToHttp: () => ({ getRequest: () => req }) } as any,
+      req,
+    };
+  };
 
+  const originalBypass = process.env.DEV_AUTH_BYPASS;
   beforeEach(() => {
-    process.env.SUPABASE_URL = 'https://x.supabase.co';
-    process.env.SUPABASE_SERVICE_ROLE_KEY = 'x';
+    delete process.env.DEV_AUTH_BYPASS;
+  });
+  afterEach(() => {
+    if (originalBypass === undefined) delete process.env.DEV_AUTH_BYPASS;
+    else process.env.DEV_AUTH_BYPASS = originalBypass;
   });
 
   it('rejects missing bearer', async () => {
     const guard = new AuthGuard();
-    await expect(guard.canActivate(makeCtx({}))).rejects.toThrow(/bearer/i);
+    const { ctx } = makeCtx({});
+    await expect(guard.canActivate(ctx)).rejects.toThrow(/bearer/i);
   });
 
   it('rejects wrong auth scheme', async () => {
     const guard = new AuthGuard();
-    await expect(guard.canActivate(makeCtx({ authorization: 'Basic xxx' }))).rejects.toThrow(/bearer/i);
+    const { ctx } = makeCtx({ authorization: 'Basic xxx' });
+    await expect(guard.canActivate(ctx)).rejects.toThrow(/bearer/i);
   });
 
-  it('extracts user from valid token', async () => {
+  it('rejects when DEV_AUTH_BYPASS not set even with Bearer demo', async () => {
     const guard = new AuthGuard();
-    // Mock the internal supabase client
-    const mockGetUser = vi.fn().mockResolvedValue({
-      data: { user: { id: 'user-123', email: 'test@example.com' } },
-      error: null,
+    const { ctx } = makeCtx({ authorization: 'Bearer demo' });
+    await expect(guard.canActivate(ctx)).rejects.toThrow(/not configured/i);
+  });
+
+  it('accepts Bearer demo when DEV_AUTH_BYPASS=1', async () => {
+    process.env.DEV_AUTH_BYPASS = '1';
+    const guard = new AuthGuard();
+    const { ctx, req } = makeCtx({ authorization: 'Bearer demo' });
+    const ok = await guard.canActivate(ctx);
+    expect(ok).toBe(true);
+    expect(req.user).toEqual({
+      id: '00000000-0000-4000-8000-000000000001',
+      email: 'dev@local',
     });
-    (guard as any).supabase = { auth: { getUser: mockGetUser } };
-
-    const req = { headers: { authorization: 'Bearer valid_token' } };
-    const ctx = { switchToHttp: () => ({ getRequest: () => req }) } as any;
-
-    const result = await guard.canActivate(ctx);
-    expect(result).toBe(true);
-    expect((req as any).user).toEqual({ id: 'user-123', email: 'test@example.com' });
-    expect(mockGetUser).toHaveBeenCalledWith('valid_token');
   });
 
-  it('rejects on Supabase error', async () => {
+  it('accepts Bearer dev when DEV_AUTH_BYPASS=1', async () => {
+    process.env.DEV_AUTH_BYPASS = '1';
     const guard = new AuthGuard();
-    (guard as any).supabase = {
-      auth: { getUser: vi.fn().mockResolvedValue({ data: {}, error: { message: 'expired' } }) },
-    };
-    const ctx = { switchToHttp: () => ({ getRequest: () => ({ headers: { authorization: 'Bearer xxx' } }) }) } as any;
-    await expect(guard.canActivate(ctx)).rejects.toThrow(/expired/);
+    const { ctx, req } = makeCtx({ authorization: 'Bearer dev' });
+    const ok = await guard.canActivate(ctx);
+    expect(ok).toBe(true);
+    expect(req.user.id).toBe('00000000-0000-4000-8000-000000000001');
+  });
+
+  it('rejects non-demo/dev tokens even when DEV_AUTH_BYPASS=1', async () => {
+    process.env.DEV_AUTH_BYPASS = '1';
+    const guard = new AuthGuard();
+    const { ctx } = makeCtx({ authorization: 'Bearer some-random-jwt' });
+    await expect(guard.canActivate(ctx)).rejects.toThrow(/not configured/i);
   });
 });
