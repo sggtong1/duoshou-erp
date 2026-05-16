@@ -1,84 +1,74 @@
-// 幂等地创建/确保一个常驻 dev 测试账号,挂到现有 BI org 作为 owner。
-// 跑多次安全,已存在就跳过。
+// 幂等 seed: 确保 AuthGuard 在 DEV_AUTH_BYPASS=1 + Bearer demo 模式下
+// 注入的 dev 用户 (id = DEV_USER_ID 00000000-0000-4000-8000-000000000001)
+// 在 user 表存在,并作为 owner 加入到 BI org (mini.duoshou 上的)。
 //
 // Usage:  cd apps/api && node scripts/seed-dev-user.mjs
 //
-// 登录:   email/password 见下面 DEV_EMAIL / DEV_PASSWORD 常量,
-//         前端走 supabase signInWithPassword,或脚本里:
-//           const { data } = await anon.auth.signInWithPassword({ email, password });
-//           const token = data.session.access_token;
+// 跑多次安全,已存在就跳过。
 //
-import { createClient } from '@supabase/supabase-js';
-import { config as loadDotenv } from 'dotenv';
+import pg from 'pg';
 import { randomUUID } from 'node:crypto';
+import { config as loadDotenv } from 'dotenv';
 
 loadDotenv({ path: '.env.development' });
 
-const DEV_EMAIL = 'dev-tester@duoshou.test';
-const DEV_PASSWORD = 'DuoshouDev!2026';
-const BI_ORG_ID = '503a9c8d-1976-475a-85fe-0d65af3c71d5';
+const DEV_USER_ID = '00000000-0000-4000-8000-000000000001';
+const DEV_USER_EMAIL = 'dev@local';
 
-const admin = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY, { auth: { persistSession: false } });
-
-console.log('=== seed dev tester ===');
-console.log('  email:    ', DEV_EMAIL);
-console.log('  password: ', DEV_PASSWORD);
-console.log('  org_id:   ', BI_ORG_ID);
-
-// 1. 确保 BI org 存在
-const orgCheck = await admin.from('bi_org_daily').select('org_id').eq('org_id', BI_ORG_ID).limit(1);
-if (orgCheck.error) throw orgCheck.error;
-if (!orgCheck.data?.length) {
-  console.error(`✗ org ${BI_ORG_ID} 没有 BI 数据。是否同步脚本灌的是别的 org_id?`);
+if (!process.env.DATABASE_URL) {
+  console.error('DATABASE_URL not set in apps/api/.env.development');
   process.exit(2);
 }
 
-// 2. 确保 supabase auth user 存在 (幂等: 已存在则查 id)
-let userId;
-const create = await admin.auth.admin.createUser({
-  email: DEV_EMAIL,
-  password: DEV_PASSWORD,
-  email_confirm: true,
-});
-if (create.error) {
-  // 已存在: 用 listUsers 找
-  if (/already|exist|registered/i.test(create.error.message)) {
-    let page = 1;
-    while (true) {
-      const list = await admin.auth.admin.listUsers({ page, perPage: 200 });
-      if (list.error) throw list.error;
-      const found = list.data.users.find((u) => u.email === DEV_EMAIL);
-      if (found) { userId = found.id; break; }
-      if (list.data.users.length < 200) break;
-      page++;
-    }
-    if (!userId) throw new Error(`createUser said exists but listUsers can't find ${DEV_EMAIL}`);
-    console.log('  auth user: exists', userId);
-  } else {
-    throw create.error;
+const client = new pg.Client(process.env.DATABASE_URL);
+await client.connect();
+
+console.log('=== seed dev tester (mini-postgres) ===');
+console.log('  user id:  ', DEV_USER_ID);
+console.log('  email:    ', DEV_USER_EMAIL);
+
+try {
+  // 1. 找有 BI 数据的 org_id (取行最多那个;通常只有一个)
+  const orgRow = await client.query(`
+    SELECT org_id
+    FROM bi_org_daily
+    GROUP BY org_id
+    ORDER BY count(*) DESC
+    LIMIT 1
+  `);
+  if (!orgRow.rows.length) {
+    console.error('✗ bi_org_daily 是空的, BI 数据没同步过来? STOP');
+    process.exit(3);
   }
-} else {
-  userId = create.data.user.id;
-  console.log('  auth user: created', userId);
+  const orgId = orgRow.rows[0].org_id;
+  console.log('  org_id:   ', orgId);
+
+  // 2. upsert public.user
+  await client.query(
+    `INSERT INTO "user" (id, email, auth_provider)
+     VALUES ($1, $2, 'dev-bypass')
+     ON CONFLICT (id) DO UPDATE SET email = EXCLUDED.email`,
+    [DEV_USER_ID, DEV_USER_EMAIL],
+  );
+  console.log('  user:     upserted');
+
+  // 3. ensure member (user_id + org_id 是复合唯一)
+  const existing = await client.query(
+    `SELECT id, role FROM member WHERE user_id = $1 AND org_id = $2`,
+    [DEV_USER_ID, orgId],
+  );
+  if (existing.rows.length) {
+    console.log('  member:   exists', existing.rows[0].id, 'role:', existing.rows[0].role);
+  } else {
+    const memberId = randomUUID();
+    await client.query(
+      `INSERT INTO member (id, user_id, org_id, role) VALUES ($1, $2, $3, 'owner')`,
+      [memberId, DEV_USER_ID, orgId],
+    );
+    console.log('  member:   inserted as owner', memberId);
+  }
+
+  console.log('\n✅ dev user ready. NestJS AuthGuard 接受 Authorization: Bearer demo');
+} finally {
+  await client.end();
 }
-
-// 3. 业务 user 表 upsert
-const upUser = await admin.from('user').upsert({ id: userId, email: DEV_EMAIL, auth_provider: 'supabase' });
-if (upUser.error) throw upUser.error;
-console.log('  public.user: upserted');
-
-// 4. member 表 upsert (user_id + org_id 复合唯一)
-//    没有自然 upsert 入口 — 先查再插入,避免唯一约束冲突时报错。
-const existing = await admin.from('member').select('id, role').eq('user_id', userId).eq('org_id', BI_ORG_ID).maybeSingle();
-if (existing.error) throw existing.error;
-if (existing.data) {
-  console.log('  member: exists', existing.data.id, 'role:', existing.data.role);
-} else {
-  const ins = await admin.from('member').insert({ id: randomUUID(), user_id: userId, org_id: BI_ORG_ID, role: 'owner' });
-  if (ins.error) throw ins.error;
-  console.log('  member: inserted as owner');
-}
-
-console.log('\n✅ dev tester ready. Login with:');
-console.log('   email:    ', DEV_EMAIL);
-console.log('   password: ', DEV_PASSWORD);
