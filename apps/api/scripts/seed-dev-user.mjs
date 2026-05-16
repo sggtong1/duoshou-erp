@@ -28,20 +28,48 @@ console.log('  user id:  ', DEV_USER_ID);
 console.log('  email:    ', DEV_USER_EMAIL);
 
 try {
-  // 1. 找有 BI 数据的 org_id (取行最多那个;通常只有一个)
-  const orgRow = await client.query(`
-    SELECT org_id
-    FROM bi_org_daily
-    GROUP BY org_id
-    ORDER BY count(*) DESC
-    LIMIT 1
+  // 1. 选 org_id, 优先级:
+  //    a) agent_task 表行最多的 org (反映 Bearer demo / Chrome 扩展派单的实际工作 org)
+  //    b) fallback: bi_org_daily 行最多的 org (BI 数据归属)
+  //    c) fallback: organization 表里随便一个
+  // 这个优先级避免把 DEV_USER_ID 关联到只有历史 BI 而无业务数据的 org。
+  let orgId;
+  let orgSource;
+  const fromAgent = await client.query(`
+    SELECT org_id FROM agent_task GROUP BY org_id ORDER BY count(*) DESC LIMIT 1
   `);
-  if (!orgRow.rows.length) {
-    console.error('✗ bi_org_daily 是空的, BI 数据没同步过来? STOP');
-    process.exit(3);
+  if (fromAgent.rows.length) {
+    orgId = fromAgent.rows[0].org_id;
+    orgSource = 'agent_task';
+  } else {
+    const fromBi = await client.query(`
+      SELECT org_id FROM bi_org_daily GROUP BY org_id ORDER BY count(*) DESC LIMIT 1
+    `);
+    if (fromBi.rows.length) {
+      orgId = fromBi.rows[0].org_id;
+      orgSource = 'bi_org_daily';
+    } else {
+      const anyOrg = await client.query(`SELECT id FROM organization ORDER BY created_at DESC LIMIT 1`);
+      if (!anyOrg.rows.length) {
+        console.error('✗ organization 表是空的, db 没数据? STOP');
+        process.exit(3);
+      }
+      orgId = anyOrg.rows[0].id;
+      orgSource = 'organization (fallback)';
+    }
   }
-  const orgId = orgRow.rows[0].org_id;
-  console.log('  org_id:   ', orgId);
+  console.log(`  org_id:    ${orgId}  (from ${orgSource})`);
+
+  // 2. 清理 DEV_USER_ID 关联到其它 org 的孤儿 member (history artifact)
+  const cleanup = await client.query(
+    `DELETE FROM member WHERE user_id = $1 AND org_id != $2 RETURNING id, org_id`,
+    [DEV_USER_ID, orgId],
+  );
+  if (cleanup.rowCount > 0) {
+    for (const r of cleanup.rows) {
+      console.log(`  cleaned:  removed orphan member ${r.id} (was in org ${r.org_id})`);
+    }
+  }
 
   // 2. upsert public.user
   await client.query(
