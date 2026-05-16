@@ -534,3 +534,35 @@ model BiSkuSnapshot {
   @@index([orgId, sales30dVolume(sort: Desc)], map: "bi_sku_snapshot_org_sales30_idx")
   @@map("bi_sku_snapshot")
 }
+
+// ── Agent Task Queue ──────────────────────────────────────────────────────────
+// 用于 ERP <-> Chrome 插件之间的任务派单：
+//   - ERP / cron 创建 pending 任务
+//   - 插件长轮询 /agent/tasks/claim 原子领取
+//   - 插件执行完 POST 结果
+model AgentTask {
+  id                String    @id @default(uuid())
+  orgId             String    @map("org_id")
+  shopId            String?   @map("shop_id")     // null 表示无店铺上下文
+  createdBy         String?   @map("created_by")  // user id
+  kind              String    // e.g. 'scrape:activity-data' / 'submit:activity-enroll'
+  payload           Json      @default("{}")
+  status            String    @default("pending") // pending | claimed | running | success | failed | cancelled
+  pluginInstanceId  String?   @map("plugin_instance_id")
+  result            Json?
+  errorCode         String?   @map("error_code")
+  errorMessage      String?   @map("error_message")
+  attempts          Int       @default(0)
+  maxAttempts       Int       @default(3) @map("max_attempts")
+  priority          Int       @default(0)
+  createdAt         DateTime  @default(now()) @map("created_at")
+  claimedAt         DateTime? @map("claimed_at")
+  startedAt         DateTime? @map("started_at")
+  completedAt       DateTime? @map("completed_at")
+  expiresAt         DateTime? @map("expires_at")  // 租约到期，sweeper 会回收
+
+  @@index([orgId, status, priority(sort: Desc), createdAt], map: "agent_task_org_status_idx")
+  @@index([orgId, shopId, createdAt(sort: Desc)], map: "agent_task_org_shop_idx")
+  @@index([status, expiresAt], map: "agent_task_status_expires_idx")
+  @@map("agent_task")
+}
