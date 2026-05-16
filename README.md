@@ -24,9 +24,8 @@ Implementation plan (W0): `docs/superpowers/plans/2026-04-18-w0-foundation.md`
 
 ### Prerequisites
 
-- Node.js 20+, pnpm 9+
-- Redis 7 (local: `docker run -d --name duoshou-redis -p 6379:6379 redis:7-alpine`)
-- Supabase project (free tier is fine): create at https://supabase.com/dashboard
+- Node.js 20.19+, pnpm 9+
+- PostgreSQL 16 + Redis 7. Default: the mac-mini `mini-postgres` + `mini-redis` docker containers (this project's `duoshou` database lives in `mini-postgres`). For development on another machine, point `DATABASE_URL` / `REDIS_URL` at your own instances.
 - (For integration tests) Temu service-provider test credentials — see below
 
 ### Install
@@ -44,15 +43,30 @@ cp apps/api/.env.development.example apps/api/.env.development
 cp apps/web/.env.development.example apps/web/.env.development
 ```
 
-Fill in:
+**Database / Redis**: defaults assume the mac-mini docker containers `mini-postgres` (db `duoshou`, user `admin`, `127.0.0.1:5432`) and `mini-redis` (`127.0.0.1:6379`). On a different machine, swap `DATABASE_URL` and `REDIS_URL` to your own instances.
 
-- `DATABASE_URL` — Supabase Postgres connection string (Settings → Database)
-- `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` — Supabase project → API settings
-- `CREDS_ENCRYPTION_KEY` — generate with:
+**Auth**: dev runs with `DEV_AUTH_BYPASS=1` and the backend accepts `Authorization: Bearer demo` (or `Bearer dev`). The guard injects a stable dev user `id = 00000000-0000-4000-8000-000000000001`. Frontend auto-detects demo mode when `VITE_SUPABASE_URL` is blank in `apps/web/.env.development` — `stores/auth.ts` then issues `Bearer demo` on every request. Real-user auth (JWT verification etc.) plugs in at `apps/api/src/modules/auth/auth.guard.ts`.
 
-  ```bash
-  node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
-  ```
+**Seed the dev user** so it owns the working org (Bearer demo lands here):
+
+```bash
+cd apps/api && node scripts/seed-dev-user.mjs
+```
+
+The script picks the org with the most agent-task activity (the "real-work" org), cleans up any orphan member rows, and is safe to rerun.
+
+**Rollback to Supabase**: the cutover keeps the Supabase project (kivdxnlpjtzgmbhzusrd) alive and `.env.development` retains all original values as `_BACKUP` aliases. To revert:
+
+1. `DATABASE_URL` ← `DATABASE_URL_SUPABASE_BACKUP`
+2. `REDIS_URL` ← `REDIS_URL_UPSTASH_BACKUP`
+3. (If reviving Supabase Auth) restore the original `auth.guard.ts` from git history before the simplification commit, plus the `SUPABASE_*` env vars from their `_BACKUP` aliases
+4. Restart `pnpm dev:api`
+
+**`CREDS_ENCRYPTION_KEY`** — generate fresh per environment:
+
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
+```
 
 ### Generate Temu SDK
 
