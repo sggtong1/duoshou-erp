@@ -1,6 +1,6 @@
 <template>
   <n-dropdown :options="options" trigger="click" @select="onSelect">
-    <n-avatar round size="small" :style="{ backgroundColor: '#2080f0', cursor: 'pointer' }">
+    <n-avatar round size="small" :style="{ backgroundColor: '#1f6fff', cursor: 'pointer', fontWeight: '700' }">
       {{ initial }}
     </n-avatar>
   </n-dropdown>
@@ -18,9 +18,9 @@ const auth = useAuthStore();
 const initial = computed(() => (auth.userEmail?.[0] ?? 'U').toUpperCase());
 
 const options = [
-  { label: '🏪 我的店铺', key: '/shops' },
-  { label: '🔔 核价提醒', key: '/price-reviews' },
-  { label: '⚙️ 设置', key: '/settings' },
+  { label: '店铺连接', key: '/shops' },
+  { label: '价格操作台', key: '/pricing-ops' },
+  { label: '系统设置', key: '/settings' },
   { type: 'divider', key: '__divider__' },
   { label: '退出登录', key: '__logout__' },
 ];

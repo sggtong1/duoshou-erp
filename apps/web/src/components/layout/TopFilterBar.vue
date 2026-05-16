@@ -16,11 +16,12 @@ import TimeRangeFilter from '@/components/filters/TimeRangeFilter.vue';
 
 <style scoped>
 .top-filter-bar {
-  padding: 12px 16px;
+  padding: 12px 24px;
   background: #fff;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--ds-line);
   display: flex;
-  flex-direction: column;
-  gap: 2px;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 </style>

@@ -3,10 +3,10 @@
     v-model:value="q"
     :options="options"
     :get-show="() => q.length > 0"
-    placeholder="搜索店铺 / SKU"
+    placeholder="搜索店铺、SKU、运营任务"
     size="small"
     clearable
-    style="width: 260px;"
+    class="global-search"
     @select="onSelect"
   />
 </template>
@@ -31,14 +31,14 @@ const options = computed<AutoCompleteOption[]>(() => {
   for (const s of shops.items) {
     const name = (s.displayName ?? '').toLowerCase();
     if (name.includes(needle) || s.platformShopId.includes(needle)) {
-      out.push({ label: `🏪 ${s.displayName ?? s.platformShopId}`, value: `shop:${s.id}` });
+      out.push({ label: `店铺 · ${s.displayName ?? s.platformShopId}`, value: `shop:${s.id}` });
       if (out.length >= 10) break;
     }
   }
   for (const k of dashboard.data?.topSkus ?? []) {
     const title = (k.skuTitle ?? '').toLowerCase();
     if (title.includes(needle) || k.platformSkuId.includes(needle)) {
-      out.push({ label: `📦 ${k.skuTitle ?? k.platformSkuId}`, value: `sku:${k.platformSkuId}` });
+      out.push({ label: `SKU · ${k.skuTitle ?? k.platformSkuId}`, value: `sku:${k.platformSkuId}` });
       if (out.length >= 20) break;
     }
   }
@@ -54,3 +54,14 @@ function onSelect(v: string) {
   q.value = '';
 }
 </script>
+
+<style scoped>
+.global-search {
+  width: 320px;
+}
+@media (max-width: 900px) {
+  .global-search {
+    width: 100%;
+  }
+}
+</style>

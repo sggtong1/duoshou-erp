@@ -4,7 +4,7 @@ import LoginPage from '@/pages/LoginPage.vue';
 import ShopsListPage from '@/pages/shops/ShopsListPage.vue';
 import ShopsConnectPage from '@/pages/shops/ShopsConnectPage.vue';
 import ProductListPage from '@/pages/products/ProductListPage.vue';
-import PriceReviewInboxPage from '@/pages/price-reviews/PriceReviewInboxPage.vue';
+import PricingOpsWorkbenchPage from '@/pages/pricing/PricingOpsWorkbenchPage.vue';
 import PriceReviewDetailPage from '@/pages/price-reviews/PriceReviewDetailPage.vue';
 import SettingsPage from '@/pages/settings/SettingsPage.vue';
 import SalesAnalysisPage from '@/pages/sales-analysis/SalesAnalysisPage.vue';
@@ -15,6 +15,7 @@ import RegionAnalysisPage from '@/pages/region-analysis/RegionAnalysisPage.vue';
 import ProfitAnalysisPage from '@/pages/profit-analysis/ProfitAnalysisPage.vue';
 import InventoryAlertsPage from '@/pages/inventory-alerts/InventoryAlertsPage.vue';
 import ReportsPage from '@/pages/reports/ReportsPage.vue';
+import ModulePlaceholderPage from '@/pages/modules/ModulePlaceholderPage.vue';
 import { useAuthStore } from '@/stores/auth';
 
 const routes: RouteRecordRaw[] = [
@@ -23,7 +24,8 @@ const routes: RouteRecordRaw[] = [
   { path: '/shops', component: ShopsListPage, meta: { requiresAuth: true } },
   { path: '/shops/new', component: ShopsConnectPage, meta: { requiresAuth: true } },
   { path: '/products', component: ProductListPage, meta: { requiresAuth: true } },
-  { path: '/price-reviews', component: PriceReviewInboxPage, meta: { requiresAuth: true } },
+  { path: '/pricing-ops', component: PricingOpsWorkbenchPage, meta: { requiresAuth: true } },
+  { path: '/price-reviews', component: PricingOpsWorkbenchPage, meta: { requiresAuth: true } },
   { path: '/price-reviews/:id', component: PriceReviewDetailPage, meta: { requiresAuth: true } },
   { path: '/settings', component: SettingsPage, meta: { requiresAuth: true } },
 
@@ -35,6 +37,7 @@ const routes: RouteRecordRaw[] = [
   { path: '/profit-analysis',  component: ProfitAnalysisPage,  meta: { requiresAuth: true } },
   { path: '/inventory-alerts', component: InventoryAlertsPage, meta: { requiresAuth: true } },
   { path: '/reports',          component: ReportsPage,         meta: { requiresAuth: true } },
+  { path: '/modules/:slug',     component: ModulePlaceholderPage, meta: { requiresAuth: true } },
 ];
 
 const router = createRouter({ history: createWebHistory(), routes });
